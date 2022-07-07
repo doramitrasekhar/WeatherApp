@@ -9,8 +9,12 @@ import android.widget.TextView
 import com.assignment.weatherapp.R
 
 object LoadingScreen {
-    var dialog: Dialog? = null //obj
-    fun displayLoadingWithText(context: Context?, text: String?, cancelable: Boolean) { // function -- context(parent (reference))
+    var dialog: Dialog? = null
+    fun displayLoadingWithText(
+        context: Context?,
+        text: String?,
+        cancelable: Boolean
+    ) {
         dialog = Dialog(context!!)
         dialog!!.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog!!.setContentView(R.layout.weather_loader)

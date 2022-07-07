@@ -1,6 +1,7 @@
 package com.assignment.data.di
 
 import android.content.Context
+import android.util.Log
 import com.assignment.data.BuildConfig
 import com.assignment.data.api.WeatherApi
 import com.assignment.data.repositories.WeatherInfoRemoteDataSource
@@ -11,9 +12,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import okhttp3.Cache
-import okhttp3.Interceptor
-import okhttp3.OkHttpClient
+import okhttp3.*
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.File
@@ -52,15 +51,10 @@ class NetworkModule {
         return okHttpClientBuilder.build()
     }
 
-
     @Provides
     @Singleton
     fun provideHeaderInterceptor(): Interceptor {
-        return Interceptor {
-            val requestBuilder = it.request().newBuilder()
-            // we can add all headers by calling 'requestBuilder.addHeader(name ,  value)'
-            it.proceed(requestBuilder.build())
-        }
+        return ErrorInterceptor()
     }
 
     @Provides
@@ -86,5 +80,25 @@ class NetworkModule {
     @Singleton
     fun provideWeatherRepoImpl(weatherInfoRemoteSourceImpl: WeatherInfoRemoteDataSourceImpl): WeatherRepositoryImpl {
         return WeatherRepositoryImpl(provideDataSourceImpl(weatherInfoRemoteSourceImpl))
+    }
+}
+
+class ErrorInterceptor : Interceptor {
+    private val NETWORK_TAG = "NetworkModule"
+    override fun intercept(chain: Interceptor.Chain): Response {
+        val request: Request = chain.request()
+        val response = chain.proceed(request)
+        when (response.code) {
+            200 -> {
+                Log.d(NETWORK_TAG, response.toString())
+            }
+            400 -> {
+                Log.d(NETWORK_TAG, response.toString())
+            }
+            else -> {
+                Log.d(NETWORK_TAG, response.toString())
+            }
+        }
+        return response
     }
 }

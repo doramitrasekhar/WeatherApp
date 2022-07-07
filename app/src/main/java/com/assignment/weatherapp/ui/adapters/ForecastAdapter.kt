@@ -49,7 +49,6 @@ class ForecastAdapter(private val forecastItems: List<ForecastResult>) :
         return forecastItems.size
     }
 
-    // Holds the views for adding it to image and text
     class ViewHolder(ItemView: View) : RecyclerView.ViewHolder(ItemView) {
         val dayType: TextView = itemView.findViewById(R.id.text_day_type)
         val windVal: TextView = itemView.findViewById(R.id.text_wind_value)

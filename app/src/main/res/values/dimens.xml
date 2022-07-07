@@ -1,0 +1,7 @@
+<resources>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="three">3dp</dimen>
+    <dimen name="image_weather_symbol_dimen">33dp</dimen>
+    <dimen name="text_date_time_top_margin">2dp</dimen>
+    <dimen name="image_weather_human_reaction_height">300dp</dimen>
+</resources>

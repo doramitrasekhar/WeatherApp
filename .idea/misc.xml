@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="app/src/main/res/drawable-hdpi/drawable.xml" value="0.2335" />
+        <entry key="app/src/main/res/drawable/black_outline_square_rounded_shape_bg.xml" value="0.2335" />
+        <entry key="app/src/main/res/drawable/ic_baseline_location_on_24.xml" value="0.248" />
+        <entry key="app/src/main/res/drawable/ic_baseline_search_24.xml" value="0.248" />
+        <entry key="app/src/main/res/drawable/ic_sunny.xml" value="0.2535" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.19270833333333334" />
+        <entry key="app/src/main/res/layout/content_main.xml" value="0.19270833333333334" />
+        <entry key="app/src/main/res/layout/forecast_item.xml" value="0.11097717285156244" />
+        <entry key="app/src/main/res/layout/fragment_first.xml" value="0.23258870442708326" />
+        <entry key="app/src/main/res/layout/fragment_second.xml" value="0.2776268115942029" />
+        <entry key="app/src/main/res/layout/layout_loading_screen.xml" value="0.2776268115942029" />
+        <entry key="app/src/main/res/layout/user_info.xml" value="0.2776268115942029" />
+        <entry key="app/src/main/res/layout/weather_info.xml" value="0.2359375" />
+        <entry key="app/src/main/res/layout/weather_loader.xml" value="0.2776268115942029" />
+        <entry key="app/src/main/res/menu/menu_main.xml" value="0.3572916666666667" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>

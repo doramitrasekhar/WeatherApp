@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:text="@string/thank_you"
         android:textColor="@color/black"
-        android:textSize="22sp"
+        android:textSize="@dimen/textview_second_size"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

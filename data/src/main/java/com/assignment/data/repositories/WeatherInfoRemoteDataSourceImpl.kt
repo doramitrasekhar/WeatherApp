@@ -3,10 +3,13 @@ package com.assignment.data.repositories
 import com.assignment.data.api.WeatherApi
 import com.assignment.data.api.WeatherApiResponse
 import com.assignment.data.mappers.WeatherInfoResponseMapper
+import com.assignment.data.util.Constants
 import com.assignment.domain.common.Result
 import com.assignment.domain.entities.WeatherInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import retrofit2.HttpException
+import java.io.IOException
 import javax.inject.Inject
 
 class WeatherInfoRemoteDataSourceImpl @Inject constructor(
@@ -32,12 +35,24 @@ class WeatherInfoRemoteDataSourceImpl @Inject constructor(
                             )
                         }
                     }
-                    return@withContext Result.Error(java.lang.Exception("WRONG INPUT"))
+                    return@withContext Result.Error(java.lang.Exception(Constants.WRONG_INPUT))
                 } else {
                     return@withContext Result.Error(Exception(response.message()))
                 }
             } catch (e: Exception) {
                 return@withContext Result.Error(e)
+            } catch (e: HttpException) {
+                return@withContext Result.Error(
+                    Exception(e.localizedMessage ?: Constants.UNKNOWN_ERROR)
+                )
+            } catch (e: IOException) {
+                return@withContext Result.Error(
+                    Exception(e.localizedMessage ?: Constants.CONNECTIVITY_ERROR)
+                )
+            } catch (e: Exception) {
+                return@withContext Result.Error(
+                    Exception(e.localizedMessage ?: Constants.CONNECTIVITY_ERROR)
+                )
             }
         }
 }

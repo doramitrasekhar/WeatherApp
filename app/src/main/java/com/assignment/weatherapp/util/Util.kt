@@ -1,4 +1,4 @@
-package com.assignment.weatherapp.ui.util
+package com.assignment.weatherapp.util
 
 import android.annotation.SuppressLint
 import androidx.core.text.isDigitsOnly
@@ -42,10 +42,10 @@ object AppUtils {
             return WeatherStatus.SNOWY
         } else {
             val temp = getNumberFromString(tempVal)
-            if (temp.isDigitsOnly()) {
-                return getWeatherStatusFromTemperature(temp.toDouble())
+            return if (temp.isDigitsOnly()) {
+                getWeatherStatusFromTemperature(temp.toDouble())
             } else {
-                return WeatherStatus.SUNNY
+                WeatherStatus.SUNNY
             }
         }
     }

@@ -9,12 +9,13 @@ android {
     compileSdk 32
 
     defaultConfig {
+        // Specifies the application ID for the APK.
         applicationId "com.assignment.weatherinfoapp"
         minSdk 21
         targetSdk 32
         versionCode 1
         versionName "1.0"
-
+        // Specifies the fully-qualified class name of the test instrumentation runner.
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -38,6 +39,12 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    android{
+        testOptions {
+            unitTests.returnDefaultValues = true
+        }
+    }
 }
 
 dependencies {
@@ -53,16 +60,22 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     /// newly added
-    implementation("com.google.dagger:hilt-android:2.38.1")
-    kapt("com.google.dagger:hilt-android-compiler:2.38.1")
-    implementation("com.squareup.retrofit2:retrofit:2.9.0") {
+    implementation("com.google.dagger:${rootProject.ext.hiltandroid}")
+    kapt("com.google.dagger:${rootProject.ext.hiltandroidcompiler}")
+    implementation("com.squareup.retrofit2:${rootProject.ext.retrofit}") {
         exclude module: 'okhttp'
     }
-    implementation "com.squareup.retrofit2:converter-gson:2.9.0"
-    implementation "com.squareup.okhttp3:okhttp:5.0.0-alpha.2"
-    implementation "com.squareup.okhttp3:okhttp-urlconnection:4.9.1"
-    implementation "com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.2"
-    implementation "com.google.code.gson:gson:2.8.9"
-    implementation "com.google.code.gson:gson:2.8.9"
-    implementation 'com.jakewharton.timber:timber:5.0.1'
+    implementation "com.squareup.retrofit2:${rootProject.ext.retrofitconverter}"
+    implementation "com.squareup.okhttp3:okhttp:${rootProject.ext.okhttp}"
+    implementation "com.squareup.okhttp3:okhttp-urlconnection:${rootProject.ext.okhttpurlconnection}"
+    implementation "com.squareup.okhttp3:logging-interceptor:${rootProject.ext.okhttploginterceptor}"
+    implementation "com.google.code.gson:gson:${rootProject.ext.gsonVer}"
+    implementation "com.jakewharton.timber:timber:${rootProject.ext.timberVer}"
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
+    testImplementation 'io.mockk:mockk:1.12.3'
+    androidTestImplementation "io.mockk:mockk-android:1.12.3"
+    implementation "androidx.arch.core:core-testing:2.1.0"
+    testImplementation 'androidx.arch.core:core-testing:2.1.0'
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.1"
+    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.1'
 }

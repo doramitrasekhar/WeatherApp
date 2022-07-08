@@ -10,12 +10,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.assignment.weatherapp.R
 import com.assignment.weatherapp.entities.ForecastResult
 import com.assignment.weatherapp.entities.WeatherStatus
-import com.assignment.weatherapp.ui.util.AppConstants.COLON
-import com.assignment.weatherapp.ui.util.AppConstants.DAY_TITLE
-import com.assignment.weatherapp.ui.util.AppConstants.NOT_AVAILABLE_TITLE
-import com.assignment.weatherapp.ui.util.AppConstants.SPACE
-import com.assignment.weatherapp.ui.util.AppConstants.WIND_TITLE
-import com.assignment.weatherapp.ui.util.AppUtils
+import com.assignment.weatherapp.util.AppConstants.COLON
+import com.assignment.weatherapp.util.AppConstants.DAY_TITLE
+import com.assignment.weatherapp.util.AppConstants.NOT_AVAILABLE_TITLE
+import com.assignment.weatherapp.util.AppConstants.SPACE
+import com.assignment.weatherapp.util.AppConstants.WIND_TITLE
+import com.assignment.weatherapp.util.AppUtils
 
 class ForecastAdapter(private val forecastItems: List<ForecastResult>) :
     RecyclerView.Adapter<ForecastAdapter.ViewHolder>() {
@@ -30,8 +30,9 @@ class ForecastAdapter(private val forecastItems: List<ForecastResult>) :
         val forecastItem = forecastItems[position]
         holder.dayType.text = DAY_TITLE + SPACE + forecastItem.day
         holder.windVal.text = WIND_TITLE + COLON + SPACE + forecastItem.wind
+        holder.labelDegree.visibility = View.VISIBLE
         val temp: String = AppUtils.getNumberFromString(forecastItem.temperature)
-        if (temp.isDigitsOnly()) {
+        if (temp.isDigitsOnly() && temp.isNotEmpty()) {
             holder.temperature.text = temp
             when (AppUtils.getWeatherStatusFromTemperature(temp.toDouble())) {
                 WeatherStatus.SUNNY -> holder.weatherSymbols.setImageResource(R.drawable.ic_sunny)
@@ -41,6 +42,7 @@ class ForecastAdapter(private val forecastItems: List<ForecastResult>) :
             }
         } else {
             holder.temperature.text = NOT_AVAILABLE_TITLE
+            holder.labelDegree.visibility = View.GONE
             holder.weatherSymbols.setImageResource(R.drawable.ic_sunny)
         }
     }
@@ -54,5 +56,6 @@ class ForecastAdapter(private val forecastItems: List<ForecastResult>) :
         val windVal: TextView = itemView.findViewById(R.id.text_wind_value)
         val temperature: TextView = itemView.findViewById(R.id.text_temperature)
         val weatherSymbols: ImageView = itemView.findViewById(R.id.image_weather_symbol)
+        val labelDegree: TextView = itemView.findViewById(R.id.text_label_degree)
     }
 }

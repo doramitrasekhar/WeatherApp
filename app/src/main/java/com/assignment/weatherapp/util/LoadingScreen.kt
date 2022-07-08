@@ -1,4 +1,4 @@
-package com.assignment.weatherapp.ui.util
+package com.assignment.weatherapp.util
 
 import android.app.Dialog
 import android.content.Context

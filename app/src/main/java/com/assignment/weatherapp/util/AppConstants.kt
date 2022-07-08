@@ -1,4 +1,4 @@
-package com.assignment.weatherapp.ui.util
+package com.assignment.weatherapp.util
 
 object AppConstants {
     const val DATE_FORMAT = "E, d MMM yyyy"
@@ -7,4 +7,5 @@ object AppConstants {
     const val WIND_TITLE = "Wind"
     const val DAY_TITLE = "Day"
     const val NOT_AVAILABLE_TITLE = "NA"
+    const val SOMETHING_WENT_WRONG = "Something Went Wrong"
 }

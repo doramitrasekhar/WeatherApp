@@ -9,7 +9,7 @@ Weather Application to show weather updates of any city
  Screenshots of the app:
  
  Screen 1:  
- ![Screen One](https://user-images.githubusercontent.com/26110736/177984085-3cce6500-f7e8-4ece-91eb-9d02f4b30b41.png)
+ ![Screen One](https://user-images.githubusercontent.com/26110736/177984085-3cce6500-f7e8-4ece-91eb-9d02f4b30b41.png | width=100)
  
  Screen 2: 
 ![Screen Two](https://user-images.githubusercontent.com/26110736/177984145-a2bf66b3-88ad-4f7b-b490-e3e5b707bc8e.png)

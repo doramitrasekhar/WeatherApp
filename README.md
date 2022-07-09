@@ -4,6 +4,7 @@ Weather Application to show weather updates of any city
  - Clean Architecture
  - Hilt DI
  - UT for use-case ,view model
+ - Custom Adaptive App Icon
  
  
  Screenshots of the app:

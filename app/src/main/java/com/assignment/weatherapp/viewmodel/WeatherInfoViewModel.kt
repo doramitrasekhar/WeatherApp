@@ -10,7 +10,6 @@ import com.assignment.domain.usecases.WeatherInfoUseCase
 import com.assignment.weatherapp.entities.WeatherInfoResult
 import com.assignment.weatherapp.mappers.WeatherInfoResultMapper
 import com.assignment.weatherapp.service.ServiceLocator
-import com.assignment.weatherapp.util.AppConstants.SERVICE_UNAVAILABLE
 import com.assignment.weatherapp.util.AppConstants.SOMETHING_WENT_WRONG
 import com.assignment.weatherapp.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -50,10 +49,13 @@ class WeatherInfoViewModel @Inject constructor(
                     Timber.d(WeatherInfoViewModel::class.simpleName, result)
                 }
                 is Result.Error -> {
-                    if (weatherInfoResult.exception.message.equals(SERVICE_UNAVAILABLE)) {
-                        _weatherInfo.postValue(Resource.error(SERVICE_UNAVAILABLE, null))
-                    } else {
-                        _weatherInfo.postValue(Resource.error(SOMETHING_WENT_WRONG, null))
+                    weatherInfoResult.exception.message.let {
+                        _weatherInfo.postValue(
+                            Resource.error(
+                                weatherInfoResult.exception.message.toString(),
+                                null
+                            )
+                        )
                     }
                     Timber.d(WeatherInfoViewModel::class.simpleName, SOMETHING_WENT_WRONG)
                 }

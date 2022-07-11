@@ -12,17 +12,19 @@ import com.assignment.weatherapp.core.MockResponse.getErrorResource
 import com.assignment.weatherapp.core.MockResponse.getSuccessResource
 import com.assignment.weatherapp.core.MockResponse.getWeatherResult
 import com.assignment.weatherapp.entities.WeatherInfoResult
+import com.assignment.weatherapp.mappers.WeatherInfoResultMapper
 import com.assignment.weatherapp.service.ServiceLocator
+import com.assignment.weatherapp.util.AppConstants
 import com.assignment.weatherapp.util.Resource
-import io.mockk.coEvery
-import io.mockk.every
+import io.mockk.*
 import io.mockk.impl.annotations.MockK
-import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule
+import org.mockito.Mockito
 
 @ExperimentalCoroutinesApi
 internal class WeatherInfoVMTest {
@@ -40,7 +42,13 @@ internal class WeatherInfoVMTest {
     private val weatherRepositoryImpl = mockk<WeatherRepositoryImpl>(relaxed = true)
 
     @MockK
-    private lateinit var apiUsersObserver: Observer<Resource<WeatherInfoResult>>
+    private var apiUsersObserver = mockk<Observer<Resource<WeatherInfoResult>>>(relaxed = true)
+
+    @Before
+    fun setUp() {
+        MockKAnnotations.init(this)
+    }
+
 
     @Test
     fun getWeatherInfoTestOne() {
@@ -53,6 +61,26 @@ internal class WeatherInfoVMTest {
             )
             viewModel.getWeatherInfo(countryName)
             Assert.assertEquals(viewModel.weatherInfo.value, getSuccessResource(getWeatherResult()))
+        }
+    }
+
+    @Test
+    fun getWeatherInfoTestLiveData() {
+        coroutinesTestRule.runBlockingTest {
+            val viewModel = WeatherInfoViewModel(serviceLocator)
+            every { serviceLocator.provideWeatherRepository() } returns weatherRepositoryImpl
+            val weatherInfoUseCase = WeatherInfoUseCase(weatherRepositoryImpl)
+            coEvery { weatherInfoUseCase.invoke(countryName) } returns Result.Error(
+                Exception(
+                    error_message
+                )
+            )
+            viewModel.getWeatherInfo(countryName)
+            viewModel.weatherInfo
+                .observeForever(apiUsersObserver)
+            coVerify {weatherInfoUseCase.invoke(countryName)}
+            verify { apiUsersObserver.onChanged(Resource.error(AppConstants.SOMETHING_WENT_WRONG, null))}
+            viewModel.weatherInfo.removeObserver(apiUsersObserver)
         }
     }
 

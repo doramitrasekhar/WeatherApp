@@ -10,6 +10,8 @@ import com.assignment.weatherapp.R
 
 object LoadingScreen {
     var dialog: Dialog? = null
+
+    /// shows the loader with text
     fun displayLoadingWithText(
         context: Context?,
         text: String?,
@@ -28,6 +30,7 @@ object LoadingScreen {
         }
     }
 
+    /// hides the loader
     fun hideLoading() {
         try {
             if (dialog != null) {

@@ -22,7 +22,7 @@ import javax.inject.Singleton
 @Module
 @Suppress("unused")
 @InstallIn(SingletonComponent::class)
-class NetworkModule {
+class ApplicationModule {
 
     private val READ_TIMEOUT = 30
     private val WRITE_TIMEOUT = 30

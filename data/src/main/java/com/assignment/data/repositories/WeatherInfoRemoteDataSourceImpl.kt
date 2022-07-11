@@ -42,8 +42,9 @@ class WeatherInfoRemoteDataSourceImpl @Inject constructor(
                         return@withContext Result.Error(
                             Exception(Constants.SERVICE_UNAVAILABLE)
                         )
+                    } else {
+                        return@withContext Result.Error(Exception(response.message()))
                     }
-                    return@withContext Result.Error(Exception(response.message()))
                 }
             } catch (e: Exception) {
                 return@withContext Result.Error(e)

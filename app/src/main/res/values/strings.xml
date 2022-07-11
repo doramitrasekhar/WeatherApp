@@ -14,5 +14,6 @@
     <string name="text_label_degree_label">℃</string>
     <string name="fetching_data">Fetching...</string>
     <string name="wrong_input">Wrong Input</string>
+    <string name="service_unavailable">Service Unavailable</string>
     <string name="text_label_degree">℃</string>
 </resources>

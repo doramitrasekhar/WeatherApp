@@ -18,6 +18,7 @@ import com.assignment.weatherapp.entities.WeatherStatus
 import com.assignment.weatherapp.ui.adapters.ForecastAdapter
 import com.assignment.weatherapp.util.AppConstants
 import com.assignment.weatherapp.util.AppConstants.COLON
+import com.assignment.weatherapp.util.AppConstants.SERVICE_UNAVAILABLE
 import com.assignment.weatherapp.util.AppConstants.SPACE
 import com.assignment.weatherapp.util.AppConstants.WIND_TITLE
 import com.assignment.weatherapp.util.AppUtils
@@ -108,8 +109,17 @@ class WeatherInfoFragment : Fragment() {
                 }
                 Status.ERROR -> {
                     LoadingScreen.hideLoading()
-                    Toast.makeText(context, getString(R.string.wrong_input), Toast.LENGTH_LONG)
-                        .show()
+                    if (it.message == SERVICE_UNAVAILABLE) {
+                        Toast.makeText(
+                            context,
+                            getString(R.string.service_unavailable),
+                            Toast.LENGTH_LONG
+                        )
+                            .show()
+                    } else {
+                        Toast.makeText(context, getString(R.string.wrong_input), Toast.LENGTH_LONG)
+                            .show()
+                    }
                 }
             }
         }

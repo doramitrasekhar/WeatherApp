@@ -5,12 +5,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.assignment.domain.common.Result
-import com.assignment.domain.entities.WeatherInfo
 import com.assignment.domain.usecases.SaveWeatherInfoUseCase
 import com.assignment.domain.usecases.WeatherInfoUseCase
 import com.assignment.weatherapp.entities.WeatherInfoResult
 import com.assignment.weatherapp.mappers.WeatherInfoResultMapper
 import com.assignment.weatherapp.service.ServiceLocator
+import com.assignment.weatherapp.util.AppConstants.SERVICE_UNAVAILABLE
 import com.assignment.weatherapp.util.AppConstants.SOMETHING_WENT_WRONG
 import com.assignment.weatherapp.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -36,7 +36,7 @@ class WeatherInfoViewModel @Inject constructor(
     fun getWeatherInfo(countryName: String) {
         viewModelScope.launch {
             _weatherInfo.postValue(Resource.loading(null))
-            when (val weatherInfoResult: Result<WeatherInfo> = getWeatherInfoUseCase.invoke(countryName)) {
+            when (val weatherInfoResult = getWeatherInfoUseCase.invoke(countryName)) {
                 is Result.Success -> {
                     val result = Resource.success(
                         WeatherInfoResultMapper().toWeatherInfo(
@@ -50,7 +50,11 @@ class WeatherInfoViewModel @Inject constructor(
                     Timber.d(WeatherInfoViewModel::class.simpleName, result)
                 }
                 is Result.Error -> {
-                    _weatherInfo.postValue(Resource.error(SOMETHING_WENT_WRONG, null))
+                    if (weatherInfoResult.exception.message.equals(SERVICE_UNAVAILABLE)) {
+                        _weatherInfo.postValue(Resource.error(SERVICE_UNAVAILABLE, null))
+                    } else {
+                        _weatherInfo.postValue(Resource.error(SOMETHING_WENT_WRONG, null))
+                    }
                     Timber.d(WeatherInfoViewModel::class.simpleName, SOMETHING_WENT_WRONG)
                 }
             }

@@ -4,6 +4,7 @@ import com.assignment.data.api.WeatherApi
 import com.assignment.data.api.WeatherApiResponse
 import com.assignment.data.mappers.WeatherInfoResponseMapper
 import com.assignment.data.util.Constants
+import com.assignment.data.util.Constants.SERVICE_UNAVAILABLE_CODE
 import com.assignment.domain.common.Result
 import com.assignment.domain.entities.WeatherInfo
 import kotlinx.coroutines.Dispatchers
@@ -37,6 +38,11 @@ class WeatherInfoRemoteDataSourceImpl @Inject constructor(
                     }
                     return@withContext Result.Error(java.lang.Exception(Constants.WRONG_INPUT))
                 } else {
+                    if (response.raw().code == SERVICE_UNAVAILABLE_CODE) {
+                        return@withContext Result.Error(
+                            Exception(Constants.SERVICE_UNAVAILABLE)
+                        )
+                    }
                     return@withContext Result.Error(Exception(response.message()))
                 }
             } catch (e: Exception) {

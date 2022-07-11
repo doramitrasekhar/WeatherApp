@@ -85,6 +85,26 @@ internal class WeatherInfoVMTest {
     }
 
     @Test
+    fun getWeatherInfoTestLiveDataTwo() {
+        coroutinesTestRule.runBlockingTest {
+            val viewModel = WeatherInfoViewModel(serviceLocator)
+            every { serviceLocator.provideWeatherRepository() } returns weatherRepositoryImpl
+            val weatherInfoUseCase = WeatherInfoUseCase(weatherRepositoryImpl)
+            coEvery { weatherInfoUseCase.invoke(countryName) } returns Result.Success(
+                getWeatherResult()
+            )
+            viewModel.getWeatherInfo(countryName)
+            viewModel.weatherInfo
+                .observeForever(apiUsersObserver)
+            coVerify {weatherInfoUseCase.invoke(countryName)}
+            verify { apiUsersObserver.onChanged(Resource.success( WeatherInfoResultMapper().toWeatherInfo(
+                getWeatherResult()
+            )))}
+            viewModel.weatherInfo.removeObserver(apiUsersObserver)
+        }
+    }
+
+    @Test
     fun getWeatherInfoTestTwo() {
         coroutinesTestRule.runBlockingTest {
             val viewModel = WeatherInfoViewModel(serviceLocator)

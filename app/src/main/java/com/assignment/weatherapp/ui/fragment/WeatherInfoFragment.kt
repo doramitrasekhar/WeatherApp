@@ -48,7 +48,9 @@ class WeatherInfoFragment : Fragment() {
         @Suppress("NAME_SHADOWING")
         binding.inputFindCityWeather.setOnEditorActionListener { view, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                weatherInfoViewModel.getWeatherInfo((view as EditText).text.toString())
+                if ((view as EditText).text.toString().isNotEmpty()) {
+                    weatherInfoViewModel.getWeatherInfo(view.text.toString())
+                }
             }
             false
         }

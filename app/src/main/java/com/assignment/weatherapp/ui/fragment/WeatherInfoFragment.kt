@@ -54,9 +54,11 @@ class WeatherInfoFragment : Fragment() {
             }
             false
         }
+        /// user info icon click listener
         binding.userInfo.setOnClickListener {
             findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
         }
+
         weatherInfoViewModel.weatherInfo.observe(viewLifecycleOwner) { it ->
             when (it.status) {
                 Status.SUCCESS -> {
@@ -127,6 +129,7 @@ class WeatherInfoFragment : Fragment() {
         }
     }
 
+    /// initialising the recycler view
     private fun initializeRecyclerView() {
         val mLayoutManager = LinearLayoutManager(
             context,

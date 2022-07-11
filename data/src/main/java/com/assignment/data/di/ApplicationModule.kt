@@ -2,15 +2,19 @@ package com.assignment.data.di
 
 import android.content.Context
 import android.util.Log
+import androidx.room.Room
 import com.assignment.data.BuildConfig
 import com.assignment.data.api.WeatherApi
-import com.assignment.data.repositories.WeatherInfoRemoteDataSource
-import com.assignment.data.repositories.WeatherInfoRemoteDataSourceImpl
-import com.assignment.data.repositories.WeatherRepositoryImpl
+import com.assignment.data.db.Converters
+import com.assignment.data.db.WeatherDao
+import com.assignment.data.db.WeatherInfoDatabase
+import com.assignment.data.repositories.*
+import com.assignment.data.util.Constants.WEATHER_INFO_DB_NAME
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.*
 import retrofit2.Retrofit
@@ -70,16 +74,46 @@ class ApplicationModule {
         return retrofit.create(WeatherApi::class.java)
     }
 
+
+    @Singleton
+    @Provides
+    fun provideYourDatabase(
+        @ApplicationContext app: Context
+    ): WeatherInfoDatabase {
+        return Room.databaseBuilder(
+            app,
+            WeatherInfoDatabase::class.java,
+            WEATHER_INFO_DB_NAME
+        ).addTypeConverter(Converters()).build()
+    }
+
+    @Singleton
+    @Provides
+    fun provideYourDao(db: WeatherInfoDatabase): WeatherDao {
+        return db.weatherDao()
+    }
+
     @Provides
     @Singleton
     fun provideDataSourceImpl(weatherInfoRemoteSourceImpl: WeatherInfoRemoteDataSourceImpl): WeatherInfoRemoteDataSource =
         weatherInfoRemoteSourceImpl
 
+    @Provides
+    @Singleton
+    fun provideLocalDataSourceImpl(weatherInfoLocalDataSourceImpl: WeatherInfoLocalDataSourceImpl): WeatherInfoLocalDataSource =
+        weatherInfoLocalDataSourceImpl
+
 
     @Provides
     @Singleton
-    fun provideWeatherRepoImpl(weatherInfoRemoteSourceImpl: WeatherInfoRemoteDataSourceImpl): WeatherRepositoryImpl {
-        return WeatherRepositoryImpl(provideDataSourceImpl(weatherInfoRemoteSourceImpl))
+    fun provideWeatherRepoImpl(
+        weatherInfoLocalDataSourceImpl: WeatherInfoLocalDataSourceImpl,
+        weatherInfoRemoteSourceImpl: WeatherInfoRemoteDataSourceImpl
+    ): WeatherRepositoryImpl {
+        return WeatherRepositoryImpl(
+            provideLocalDataSourceImpl(weatherInfoLocalDataSourceImpl),
+            provideDataSourceImpl(weatherInfoRemoteSourceImpl)
+        )
     }
 }
 

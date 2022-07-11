@@ -18,7 +18,7 @@ class AppUtilsTest {
 
     @Test
     fun getCurrentDateTimeTest(){
-        val expected = "Fri, 8 Jul 2022"
+        val expected = "Mon, 11 Jul 2022"
         val result = AppUtils.getCurrentDateTime(AppConstants.DATE_FORMAT)
         assertEquals(expected,result)
     }

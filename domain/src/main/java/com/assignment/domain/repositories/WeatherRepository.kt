@@ -5,4 +5,5 @@ import com.assignment.domain.entities.WeatherInfo
 
 interface WeatherRepository {
     suspend fun getRemoteWeatherInfo(countryName: String): Result<WeatherInfo>
+    suspend fun saveWeatherInfoInDB(countryName: String, weatherInfo: WeatherInfo)
 }

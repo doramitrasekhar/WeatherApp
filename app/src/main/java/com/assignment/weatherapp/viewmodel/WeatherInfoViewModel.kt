@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.assignment.domain.common.Result
 import com.assignment.domain.entities.WeatherInfo
+import com.assignment.domain.usecases.SaveWeatherInfoUseCase
 import com.assignment.domain.usecases.WeatherInfoUseCase
 import com.assignment.weatherapp.entities.WeatherInfoResult
 import com.assignment.weatherapp.mappers.WeatherInfoResultMapper
@@ -29,6 +30,9 @@ class WeatherInfoViewModel @Inject constructor(
     val getWeatherInfoUseCase: WeatherInfoUseCase
         get() = WeatherInfoUseCase(serviceLocator.provideWeatherRepository())
 
+    val saveWeatherInfoUseCase: SaveWeatherInfoUseCase
+        get() = SaveWeatherInfoUseCase(serviceLocator.provideWeatherRepository())
+
     fun getWeatherInfo(countryName: String) {
         viewModelScope.launch {
             _weatherInfo.postValue(Resource.loading(null))
@@ -39,6 +43,8 @@ class WeatherInfoViewModel @Inject constructor(
                             weatherInfoResult.data
                         )
                     )
+                    /// save the weather info locally
+                    saveWeatherInfoUseCase.invoke(countryName,weatherInfoResult.data)
                     /// post the data to livedata
                     _weatherInfo.postValue(result)
                     Timber.d(WeatherInfoViewModel::class.simpleName, result)

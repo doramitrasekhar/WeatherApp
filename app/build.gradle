@@ -43,6 +43,9 @@ android {
             unitTests.returnDefaultValues = true
         }
     }
+    buildFeatures{
+        dataBinding=true
+    }
 }
 
 android.applicationVariants.all { variant ->

@@ -7,57 +7,51 @@ import androidx.lifecycle.viewModelScope
 import com.assignment.domain.common.Result
 import com.assignment.domain.usecases.SaveWeatherInfoUseCase
 import com.assignment.domain.usecases.WeatherInfoUseCase
-import com.assignment.weatherapp.entities.WeatherInfoResult
+import com.assignment.weatherapp.mappers.WeatherInfoErrorViewMapper
 import com.assignment.weatherapp.mappers.WeatherInfoResultMapper
-import com.assignment.weatherapp.service.ServiceLocator
-import com.assignment.weatherapp.util.AppConstants.SOMETHING_WENT_WRONG
-import com.assignment.weatherapp.util.Resource
+import com.assignment.weatherapp.util.WeatherInfoState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
+@ExperimentalCoroutinesApi
 @HiltViewModel
 class WeatherInfoViewModel @Inject constructor(
-    private val serviceLocator: ServiceLocator
+    private val weatherInfoUseCase: WeatherInfoUseCase,
+    private val saveWeatherInfoUseCase: SaveWeatherInfoUseCase,
+    private val weatherInfoErrorViewMapper: WeatherInfoErrorViewMapper,
+    private val weatherInfoResultMapper: WeatherInfoResultMapper
 ) : ViewModel() {
 
-    private val _weatherInfo = MutableLiveData<Resource<WeatherInfoResult>>()
-    val weatherInfo: LiveData<Resource<WeatherInfoResult>>
+    private val _weatherInfo = MutableLiveData<WeatherInfoState>()
+    val weatherInfo: LiveData<WeatherInfoState>
         get() = _weatherInfo
-
-    val getWeatherInfoUseCase: WeatherInfoUseCase
-        get() = WeatherInfoUseCase(serviceLocator.provideWeatherRepository())
-
-    val saveWeatherInfoUseCase: SaveWeatherInfoUseCase
-        get() = SaveWeatherInfoUseCase(serviceLocator.provideWeatherRepository())
 
     fun getWeatherInfo(countryName: String) {
         viewModelScope.launch {
-            _weatherInfo.postValue(Resource.loading(null))
-            when (val weatherInfoResult = getWeatherInfoUseCase.invoke(countryName)) {
+            _weatherInfo.postValue(WeatherInfoState(isLoading = true))
+            when (val weatherInfoResult = weatherInfoUseCase(countryName)) {
                 is Result.Success -> {
-                    val result = Resource.success(
-                        WeatherInfoResultMapper().toWeatherInfo(
-                            weatherInfoResult.data
-                        )
-                    )
-                    /// save the weather info locally
-                    saveWeatherInfoUseCase.invoke(countryName,weatherInfoResult.data)
-                    /// post the data to livedata
-                    _weatherInfo.postValue(result)
-                    Timber.d(WeatherInfoViewModel::class.simpleName, result)
-                }
-                is Result.Error -> {
-                    weatherInfoResult.exception.message.let {
+                    val weatherInfo = weatherInfoResult.data
+                    weatherInfo?.let {
                         _weatherInfo.postValue(
-                            Resource.error(
-                                weatherInfoResult.exception.message.toString(),
-                                null
+                            WeatherInfoState(
+                                data = weatherInfoResultMapper.mapToView(
+                                    weatherInfo
+                                )
                             )
                         )
                     }
-                    Timber.d(WeatherInfoViewModel::class.simpleName, SOMETHING_WENT_WRONG)
+                }
+                is Result.Error -> {
+                    _weatherInfo.postValue(
+                        WeatherInfoState(
+                            error = weatherInfoErrorViewMapper.mapToView(
+                                weatherInfoResult.errorEntity
+                            )
+                        )
+                    )
                 }
             }
         }

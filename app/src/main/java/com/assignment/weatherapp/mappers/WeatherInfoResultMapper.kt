@@ -3,11 +3,12 @@ package com.assignment.weatherapp.mappers
 import com.assignment.domain.entities.WeatherInfo
 import com.assignment.weatherapp.entities.ForecastResult
 import com.assignment.weatherapp.entities.WeatherInfoResult
+import javax.inject.Inject
 
-class WeatherInfoResultMapper {
-    fun toWeatherInfo(response: WeatherInfo): WeatherInfoResult {
-        return WeatherInfoResult(response.description, response.forecast.map {
+class WeatherInfoResultMapper @Inject constructor() : Mapper<WeatherInfoResult, WeatherInfo> {
+    override fun mapToView(input: WeatherInfo): WeatherInfoResult {
+        return WeatherInfoResult(input.description, input.forecast.map {
             ForecastResult(it.day, it.temperature, it.wind)
-        }, response.temperature, response.wind)
+        }, input.temperature, input.wind)
     }
 }

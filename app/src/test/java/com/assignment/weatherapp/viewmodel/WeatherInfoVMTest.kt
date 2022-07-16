@@ -13,7 +13,6 @@ import com.assignment.weatherapp.core.MockResponse.getSuccessResource
 import com.assignment.weatherapp.core.MockResponse.getWeatherResult
 import com.assignment.weatherapp.entities.WeatherInfoResult
 import com.assignment.weatherapp.mappers.WeatherInfoResultMapper
-import com.assignment.weatherapp.service.ServiceLocator
 import com.assignment.weatherapp.util.AppConstants
 import com.assignment.weatherapp.util.Resource
 import io.mockk.*
@@ -24,7 +23,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule
-import org.mockito.Mockito
 
 @ExperimentalCoroutinesApi
 internal class WeatherInfoVMTest {

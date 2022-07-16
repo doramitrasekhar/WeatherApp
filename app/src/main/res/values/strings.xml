@@ -16,4 +16,7 @@
     <string name="wrong_input">Wrong Input</string>
     <string name="service_unavailable">Service Unavailable</string>
     <string name="text_label_degree">℃</string>
+    <string name="network_error">Network Error</string>
+    <string name="unknown_error">Unknown</string>
+    <string name="service_error">Service Unavailable</string>
 </resources>

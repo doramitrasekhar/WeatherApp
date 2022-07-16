@@ -1,68 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_margin="@dimen/forecase_item_marin"
-    android:background="@drawable/black_outline_square_rounded_shape_bg"
-    android:padding="@dimen/forecast_item_padding">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <ImageView
-        android:id="@+id/image_weather_symbol"
-        android:layout_width="@dimen/image_weather_symbol_dimen"
-        android:layout_height="@dimen/image_weather_symbol_dimen"
-        android:scaleType="centerCrop"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <data>
 
-    <TextView
-        android:id="@+id/text_day_type"
-        style="@style/TextViewBodyStyle"
-        android:layout_width="@dimen/text_day_type_width"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/text_day_type_margin_start"
-        android:textSize="@dimen/text_day_type_size"
-        android:gravity="center"
-        app:layout_constraintStart_toEndOf="@+id/image_weather_symbol"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="Day 1" />
+        <variable
+            name="meme"
+            type="com.assignment.weatherapp.entities.WeatherInfoResult" />
+    </data>
 
-    <TextView
-        android:id="@+id/text_wind_value"
-        style="@style/TextViewNormalStyle"
-        android:layout_width="@dimen/text_wind_value_width"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/text_date_time_top_margin"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:textSize="@dimen/text_wind_value_size"
-        app:layout_constraintEnd_toEndOf="@+id/text_day_type"
-        app:layout_constraintStart_toStartOf="@+id/text_day_type"
-        app:layout_constraintTop_toBottomOf="@+id/text_day_type"
-        tools:ignore="SmallSp"
-        tools:text="Wind: 122km/h" />
-
-    <TextView
-        android:id="@+id/text_temperature"
-        style="@style/TextViewHeaderStyle"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/text_temperature_margin_start"
-        android:textSize="@dimen/text_temperature_size"
-        app:layout_constraintBottom_toBottomOf="@+id/text_wind_value"
-        app:layout_constraintStart_toEndOf="@+id/text_day_type"
-        app:layout_constraintTop_toTopOf="@+id/text_day_type"
-        tools:text="28" />
+        android:layout_margin="@dimen/forecase_item_marin"
+        android:background="@drawable/black_outline_square_rounded_shape_bg"
+        android:padding="@dimen/forecast_item_padding">
 
-    <TextView
-        android:id="@+id/text_label_degree"
-        style="@style/TextViewBodyStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/text_label_degree_label"
-        android:textSize="@dimen/text_label_degree_size"
-        app:layout_constraintStart_toEndOf="@+id/text_temperature"
-        app:layout_constraintTop_toTopOf="@+id/text_temperature" />
+        <ImageView
+            android:id="@+id/image_weather_symbol"
+            android:layout_width="@dimen/image_weather_symbol_dimen"
+            android:layout_height="@dimen/image_weather_symbol_dimen"
+            android:scaleType="centerCrop"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/text_day_type"
+            style="@style/TextViewBodyStyle"
+            android:layout_width="@dimen/text_day_type_width"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/text_day_type_margin_start"
+            android:gravity="center"
+            android:textSize="@dimen/text_day_type_size"
+            app:layout_constraintStart_toEndOf="@+id/image_weather_symbol"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Day 1" />
+
+        <TextView
+            android:id="@+id/text_wind_value"
+            style="@style/TextViewNormalStyle"
+            android:layout_width="@dimen/text_wind_value_width"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/text_date_time_top_margin"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textSize="@dimen/text_wind_value_size"
+            app:layout_constraintEnd_toEndOf="@+id/text_day_type"
+            app:layout_constraintStart_toStartOf="@+id/text_day_type"
+            app:layout_constraintTop_toBottomOf="@+id/text_day_type"
+            tools:ignore="SmallSp"
+            tools:text="Wind: 122km/h" />
+
+        <TextView
+            android:id="@+id/text_temperature"
+            style="@style/TextViewHeaderStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/text_temperature_margin_start"
+            android:textSize="@dimen/text_temperature_size"
+            app:layout_constraintBottom_toBottomOf="@+id/text_wind_value"
+            app:layout_constraintStart_toEndOf="@+id/text_day_type"
+            app:layout_constraintTop_toTopOf="@+id/text_day_type"
+            tools:text="28" />
+
+        <TextView
+            android:id="@+id/text_label_degree"
+            style="@style/TextViewBodyStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/text_label_degree_label"
+            android:textSize="@dimen/text_label_degree_size"
+            app:layout_constraintStart_toEndOf="@+id/text_temperature"
+            app:layout_constraintTop_toTopOf="@+id/text_temperature" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

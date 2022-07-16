@@ -5,23 +5,38 @@ import android.util.Log
 import androidx.room.Room
 import com.assignment.data.BuildConfig
 import com.assignment.data.api.WeatherApi
+import com.assignment.data.api.WeatherApiResponse
 import com.assignment.data.db.Converters
 import com.assignment.data.db.WeatherDao
 import com.assignment.data.db.WeatherInfoDatabase
+import com.assignment.data.error.GeneralErrorHandlerImpl
+import com.assignment.data.mappers.Mapper
+import com.assignment.data.mappers.WeatherInfoResponseMapper
 import com.assignment.data.repositories.*
 import com.assignment.data.util.Constants.WEATHER_INFO_DB_NAME
+import com.assignment.domain.entities.WeatherInfo
+import com.assignment.domain.error.ErrorHandler
+import com.assignment.domain.repositories.WeatherRepository
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import okhttp3.*
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.File
 import java.util.concurrent.TimeUnit
+import javax.inject.Qualifier
 import javax.inject.Singleton
+
+// TODO: move to another class
+@Retention(AnnotationRetention.BINARY)
+@Qualifier
+annotation class IoDispatcher
 
 @Module
 @Suppress("unused")
@@ -114,6 +129,27 @@ class ApplicationModule {
             provideLocalDataSourceImpl(weatherInfoLocalDataSourceImpl),
             provideDataSourceImpl(weatherInfoRemoteSourceImpl)
         )
+    }
+
+    @Provides
+    @Singleton
+    fun provideWeatherInfoUseCase(weatherRepositoryImpl: WeatherRepositoryImpl): WeatherRepository {
+        return weatherRepositoryImpl
+    }
+
+    @IoDispatcher
+    @Provides
+    fun providesIoDispatcher(): CoroutineDispatcher = Dispatchers.IO
+
+    @Provides
+    @Singleton
+    fun provideWeatherInfoMapper(weatherInfoResponseMapper: WeatherInfoResponseMapper): Mapper<WeatherInfo, WeatherApiResponse> =
+        weatherInfoResponseMapper
+
+    @Provides
+    @Singleton
+    fun provideErrorHandler(): ErrorHandler {
+        return GeneralErrorHandlerImpl()
     }
 }
 

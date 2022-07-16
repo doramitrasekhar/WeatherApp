@@ -3,11 +3,19 @@ package com.assignment.data.mappers
 import com.assignment.data.api.WeatherApiResponse
 import com.assignment.domain.entities.Forecast
 import com.assignment.domain.entities.WeatherInfo
+import javax.inject.Inject
 
-class WeatherInfoResponseMapper {
-    fun toWeatherInfo(response: WeatherApiResponse): WeatherInfo {
-        return WeatherInfo(response.description, response.forecast.map {
+class WeatherInfoResponseMapper @Inject constructor() : Mapper<WeatherInfo, WeatherApiResponse> {
+
+    override fun mapToDomainLayer(input: WeatherApiResponse): WeatherInfo {
+        return WeatherInfo(input.description, input.forecast.map {
             Forecast(it.day, it.temperature, it.wind)
-        }, response.temperature, response.wind)
+        }, input.temperature, input.wind)
+    }
+
+    fun isValidResponse(weatherInfo: WeatherInfo): Boolean {
+        return weatherInfo.wind.isNotEmpty()
+                && weatherInfo.description.isNotEmpty()
+                && weatherInfo.temperature.isNotEmpty()
     }
 }

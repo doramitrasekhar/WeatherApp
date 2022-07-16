@@ -42,6 +42,13 @@ class WeatherInfoViewModel @Inject constructor(
                                 )
                             )
                         )
+                        /// update the result to Local Database
+                        saveWeatherInfoUseCase(
+                            weatherInfoResultMapper.mapToWeatherEntityInfo(
+                                countryName = countryName,
+                                input = weatherInfo
+                            )
+                        )
                     }
                 }
                 is Result.Error -> {

@@ -1,8 +1,6 @@
 package com.assignment.domain.common
 
-import com.assignment.domain.base.DataModel
-
-sealed class ErrorEntity : DataModel() {
+sealed class ErrorEntity {
     object Network : ErrorEntity()
 
     object NotFound : ErrorEntity()

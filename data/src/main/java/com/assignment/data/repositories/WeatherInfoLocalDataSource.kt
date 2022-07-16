@@ -1,7 +1,7 @@
 package com.assignment.data.repositories
 
-import com.assignment.domain.entities.WeatherInfo
+import com.assignment.domain.entities.WeatherEntityInfo
 
 interface WeatherInfoLocalDataSource {
-    suspend fun saveWeatherInfo(countryName: String, weatherInfo: WeatherInfo)
+    suspend fun saveWeatherInfo(weatherEntityInfo: WeatherEntityInfo)
 }

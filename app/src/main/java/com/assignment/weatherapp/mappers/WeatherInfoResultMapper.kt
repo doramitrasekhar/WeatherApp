@@ -1,5 +1,6 @@
 package com.assignment.weatherapp.mappers
 
+import com.assignment.domain.entities.WeatherEntityInfo
 import com.assignment.domain.entities.WeatherInfo
 import com.assignment.weatherapp.entities.ForecastResult
 import com.assignment.weatherapp.entities.WeatherInfoResult
@@ -10,5 +11,9 @@ class WeatherInfoResultMapper @Inject constructor() : Mapper<WeatherInfoResult, 
         return WeatherInfoResult(input.description, input.forecast.map {
             ForecastResult(it.day, it.temperature, it.wind)
         }, input.temperature, input.wind)
+    }
+
+    fun mapToWeatherEntityInfo(countryName: String, input: WeatherInfo): WeatherEntityInfo {
+        return WeatherEntityInfo(countryName = countryName, weatherInfo = input)
     }
 }

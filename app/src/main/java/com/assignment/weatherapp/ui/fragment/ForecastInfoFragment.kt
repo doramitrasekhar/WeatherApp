@@ -9,21 +9,13 @@ import com.assignment.weatherapp.databinding.UserInfoBinding
 
 
 class ForecastInfoFragment : Fragment() {
-
-    private var _binding: UserInfoBinding? = null
-
-    private val binding get() = _binding!!
+    private lateinit var _binding: UserInfoBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = UserInfoBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+        return _binding.root
     }
 }

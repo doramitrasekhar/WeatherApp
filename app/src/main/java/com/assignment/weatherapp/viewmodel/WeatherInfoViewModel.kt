@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.assignment.domain.common.Result
+import com.assignment.domain.entities.WeatherInfo
 import com.assignment.domain.usecases.SaveWeatherInfoUseCase
 import com.assignment.domain.usecases.WeatherInfoUseCase
 import com.assignment.weatherapp.mappers.WeatherInfoErrorViewMapper
@@ -35,32 +36,53 @@ class WeatherInfoViewModel @Inject constructor(
                 is Result.Success -> {
                     val weatherInfo = weatherInfoResult.data
                     weatherInfo?.let {
-                        _weatherInfo.postValue(
-                            WeatherInfoState(
-                                data = weatherInfoResultMapper.mapToView(
-                                    weatherInfo
-                                )
-                            )
-                        )
+                        /// update the weather Info to UI
+                        updateWeatherInfoToUI(weatherInfo)
                         /// update the result to Local Database
-                        saveWeatherInfoUseCase(
-                            weatherInfoResultMapper.mapToWeatherEntityInfo(
-                                countryName = countryName,
-                                input = weatherInfo
-                            )
-                        )
+                        updateResultToLocalDatabase(countryName, weatherInfo)
                     }
                 }
                 is Result.Error -> {
-                    _weatherInfo.postValue(
-                        WeatherInfoState(
-                            error = weatherInfoErrorViewMapper.mapToView(
-                                weatherInfoResult.errorEntity
-                            )
-                        )
-                    )
+                    updateErrorResult(weatherInfoResult)
                 }
             }
+        }
+    }
+
+    /// updates the error result
+    private fun updateErrorResult(weatherInfoResult: Result<WeatherInfo>) {
+        _weatherInfo.postValue(
+            WeatherInfoState(
+                error = weatherInfoErrorViewMapper.mapToView(
+                    weatherInfoResult.errorEntity
+                )
+            )
+        )
+    }
+
+    /// update the result to local database
+    private suspend fun updateResultToLocalDatabase(
+        countryName: String,
+        weatherInfo: WeatherInfo
+    ) {
+        saveWeatherInfoUseCase(
+            weatherInfoResultMapper.mapToWeatherEntityInfo(
+                countryName = countryName,
+                input = weatherInfo
+            )
+        )
+    }
+
+    /// Update the data to the fragment
+    private fun updateWeatherInfoToUI(weatherInfo: WeatherInfo) {
+        weatherInfo.also {
+            _weatherInfo.postValue(
+                WeatherInfoState(
+                    data = weatherInfoResultMapper.mapToView(
+                        weatherInfo
+                    )
+                )
+            )
         }
     }
 }

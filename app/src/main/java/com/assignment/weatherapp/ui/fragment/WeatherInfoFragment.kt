@@ -24,9 +24,7 @@ import com.assignment.weatherapp.util.AppConstants.SPACE
 import com.assignment.weatherapp.util.AppConstants.WIND_TITLE
 import com.assignment.weatherapp.viewmodel.WeatherInfoViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-@ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class WeatherInfoFragment : Fragment() {
 
@@ -62,44 +60,69 @@ class WeatherInfoFragment : Fragment() {
             /// listen to weatherInfo LiveData
             weatherInfoViewModel.weatherInfo.observe(viewLifecycleOwner) { weatherInfoState ->
                 /// handle view loding state
-                if (weatherInfoState.isLoading) {
-                    LoadingScreen.displayLoadingWithText(
-                        context,
-                        getString(R.string.fetching_data),
-                        false
-                    )
-                }
+                handleLoadingState(weatherInfoState)
                 /// handle error state
-                weatherInfoState.error?.let {
-                    LoadingScreen.hideLoading()
-                    if (it.message == SERVICE_UNAVAILABLE) {
-                        Toast.makeText(
-                            context,
-                            getString(R.string.service_unavailable),
-                            Toast.LENGTH_LONG
-                        )
-                            .show()
-                    } else {
-                        Toast.makeText(context, getString(R.string.wrong_input), Toast.LENGTH_LONG)
-                            .show()
-                    }
-                }
+                handleErrorState(weatherInfoState)
                 /// handle success state
-                weatherInfoState.data?.let {
-                    LoadingScreen.hideLoading()
-                    /// update views
-                    updateViewVisibility(this)
-                    /// sets the adapter
-                    recyclerViewSearchedCityTemperature.adapter =
-                        ForecastAdapter(it.forecast)
-                    /// sets text to views
-                    setTextDetailsToView(this, it)
-                }
+                handleSuccessState(weatherInfoState)
             }
         }
     }
 
-    /// sets the text details to view
+    /**
+     * Handles the loading State
+     */
+    private fun handleLoadingState(weatherInfoState: WeatherInfoState) {
+        if (weatherInfoState.isLoading) {
+            LoadingScreen.displayLoadingWithText(
+                context,
+                getString(R.string.fetching_data),
+                false
+            )
+        }
+    }
+
+    /**
+     * Handles the Error State
+     */
+    private fun handleErrorState(weatherInfoState: WeatherInfoState) {
+        weatherInfoState.error?.let {
+            LoadingScreen.hideLoading()
+            if (it.message == SERVICE_UNAVAILABLE) {
+                Toast.makeText(
+                    context,
+                    getString(R.string.service_unavailable),
+                    Toast.LENGTH_LONG
+                )
+                    .show()
+            } else {
+                Toast.makeText(context, getString(R.string.wrong_input), Toast.LENGTH_LONG)
+                    .show()
+            }
+        }
+    }
+
+    /**
+     * Handles the success state
+     */
+    private fun WeatherInfoBinding.handleSuccessState(
+        weatherInfoState: WeatherInfoState
+    ) {
+        weatherInfoState.data?.let {
+            LoadingScreen.hideLoading()
+            /// update views
+            updateViewVisibility(this)
+            /// sets the adapter
+            recyclerViewSearchedCityTemperature.adapter =
+                ForecastAdapter(it.forecast)
+            /// sets text to views
+            setTextDetailsToView(this, it)
+        }
+    }
+
+    /**
+     * sets the text details to view
+     */
     private fun setTextDetailsToView(binding: WeatherInfoBinding, weatherInfoResult: WeatherInfoResult) {
         binding.apply {
             textTodaysDate.text =
@@ -118,7 +141,9 @@ class WeatherInfoFragment : Fragment() {
         }
     }
 
-    /// updates the human reaction and symbol
+    /**
+     * updates the human reaction and symbol
+     */
     private fun updateHumanReactionAndSymbol(
         binding: WeatherInfoBinding,
         description: String,
@@ -149,7 +174,9 @@ class WeatherInfoFragment : Fragment() {
         }
     }
 
-    /// update the view visibility
+    /**
+     *  update the view visibility
+     */
     private fun updateViewVisibility(binding: WeatherInfoBinding) {
         binding.apply {
             textLabelSearchForCity.visibility = View.GONE
@@ -159,7 +186,9 @@ class WeatherInfoFragment : Fragment() {
         }
     }
 
-    /// initialising the recycler view
+    /**
+     * Initialising the recycler view
+     */
     private fun initializeRecyclerView(binding: WeatherInfoBinding) {
         val mLayoutManager = LinearLayoutManager(
             context,

@@ -31,30 +31,51 @@ class WeatherInfoRemoteDataSourceImpl @Inject constructor(
                     if (response.isSuccessful && mapper.isValidResponse(dataLayerResponse)) {
                         return@withContext Result.Success(dataLayerResponse)
                     } else {
-                        return@withContext Result.Error(
-                            message = Constants.WRONG_INPUT,
-                            errorEntity = ErrorEntity.Unknown
-                        )
+                        return@withContext getErrorResult(response)
                     }
                 } ?: run {
-                    when (response.raw().code) {
-                        SERVICE_UNAVAILABLE_CODE -> return@withContext Result.Error(
-                            message = Constants.SERVICE_UNAVAILABLE,
-                            errorEntity = ErrorEntity.ServiceUnavailable
-                        )
-                        else -> {
-                            return@withContext Result.Error(
-                                message = Constants.NOT_FOUND,
-                                errorEntity = ErrorEntity.NotFound
-                            )
-                        }
-                    }
+                    return@withContext getWrongInputResult()
                 }
             } catch (e: Exception) {
-                return@withContext Result.Error(
-                    message = e.localizedMessage ?: Constants.UNKNOWN_ERROR,
-                    errorEntity = errorHandler.getError(e)
+                return@withContext getExceptionResult(e)
+            }
+        }
+
+    /**
+     * gets the exception Error result
+     */
+    private fun getExceptionResult(e: Exception): Result.Error<WeatherInfo> {
+        return Result.Error(
+            message = e.localizedMessage ?: Constants.UNKNOWN_ERROR,
+            errorEntity = errorHandler.getError(e)
+        )
+    }
+
+    /**
+     * gets the wrong Input Error Result
+     */
+    private fun getWrongInputResult(): Result.Error<WeatherInfo> {
+        return Result.Error(
+            message = Constants.WRONG_INPUT,
+            errorEntity = ErrorEntity.Unknown
+        )
+    }
+
+    /**
+     * Gets the error Result
+     */
+    private fun getErrorResult(response: Response<WeatherApiResponse>): Result.Error<WeatherInfo> {
+        when (response.raw().code) {
+            SERVICE_UNAVAILABLE_CODE -> return Result.Error(
+                message = Constants.SERVICE_UNAVAILABLE,
+                errorEntity = ErrorEntity.ServiceUnavailable
+            )
+            else -> {
+                return Result.Error(
+                    message = Constants.NOT_FOUND,
+                    errorEntity = ErrorEntity.NotFound
                 )
             }
         }
+    }
 }

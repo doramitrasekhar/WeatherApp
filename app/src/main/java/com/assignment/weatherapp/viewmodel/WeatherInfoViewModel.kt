@@ -16,7 +16,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-@ExperimentalCoroutinesApi
 @HiltViewModel
 class WeatherInfoViewModel @Inject constructor(
     private val weatherInfoUseCase: WeatherInfoUseCase,
@@ -75,14 +74,12 @@ class WeatherInfoViewModel @Inject constructor(
 
     /// Update the data to the fragment
     private fun updateWeatherInfoToUI(weatherInfo: WeatherInfo) {
-        weatherInfo.also {
-            _weatherInfo.postValue(
-                WeatherInfoState(
-                    data = weatherInfoResultMapper.mapToView(
-                        weatherInfo
-                    )
+        _weatherInfo.postValue(
+            WeatherInfoState(
+                data = weatherInfoResultMapper.mapToView(
+                    weatherInfo
                 )
             )
-        }
+        )
     }
 }

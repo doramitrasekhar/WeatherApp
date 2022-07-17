@@ -43,7 +43,7 @@ class WeatherInfoUseCaseTest {
             coEvery { weatherRepository.getRemoteWeatherInfo(countryName) } returns getSuccessResult()
             when (val weatherInfoResult = weatherInfoUseCase.invoke(countryName)) {
                 is Result.Success -> {
-                    assertEquals(weatherInfoResult.data.description, "Clear")
+                    assertEquals(weatherInfoResult.data?.description, "Clear")
                 }
                 else -> {
                     assertTrue(error_message, true)
@@ -57,7 +57,7 @@ class WeatherInfoUseCaseTest {
             coEvery { weatherRepository.getRemoteWeatherInfo(countryName) } returns getSuccessResult()
             when (val weatherInfoResult = weatherInfoUseCase.invoke(countryName)) {
                 is Result.Success -> {
-                    assertEquals(weatherInfoResult.data.temperature, "14 °C")
+                    assertEquals(weatherInfoResult.data?.temperature, "14 °C")
                 }
                 else -> {
                     assertTrue(error_message, true)

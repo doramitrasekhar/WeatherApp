@@ -15,20 +15,22 @@ import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.TypeSafeMatcher
+import org.hamcrest.core.IsInstanceOf
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @LargeTest
 @RunWith(AndroidJUnit4::class)
-class UITest4 {
+class WeatherInfoUserInterfaceWidgetAssertionTest {
 
     @Rule
     @JvmField
     var mActivityScenarioRule = ActivityScenarioRule(MainActivity::class.java)
 
     @Test
-    fun uITest4() {
+    fun weatherInfoUserInterfaceWidgetAssertionTest() {
+        Thread.sleep(2000)
         val textInputEditText = onView(
             allOf(
                 withId(R.id.input_find_city_weather),
@@ -64,15 +66,15 @@ class UITest4 {
             )
         )
         textInputEditText2.perform(pressImeActionButton())
+        Thread.sleep(3000)
 
-        val editText = onView(withId(R.id.input_find_city_weather))
-        editText.check(matches(isDisplayed()))
-
-        val textView =  onView(withId(R.id.text_todays_date))
-        textView.check(matches(isDisplayed()))
-
-        val textView2 = onView(withId(R.id.weather_description))
-        textView2.check(matches(isDisplayed()))
+        val textView = onView(
+            allOf(
+                withId(R.id.text_label_today), withText("Today"),
+                isDisplayed()
+            )
+        )
+        textView.check(matches(withText("Today")))
     }
 
     private fun childAtPosition(

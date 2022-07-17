@@ -4,7 +4,6 @@ package com.assignment.weatherapp.ui.activity
 import android.view.View
 import android.view.ViewGroup
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
@@ -22,14 +21,14 @@ import org.junit.runner.RunWith
 
 @LargeTest
 @RunWith(AndroidJUnit4::class)
-class UITest3 {
+class WeatherInfoUserInterfaceFlowTest {
 
     @Rule
     @JvmField
     var mActivityScenarioRule = ActivityScenarioRule(MainActivity::class.java)
 
     @Test
-    fun uITest3() {
+    fun weatherInfoUserInterfaceFlowTest() {
         Thread.sleep(2000)
         val textInputEditText = onView(
             allOf(
@@ -47,11 +46,11 @@ class UITest3 {
                 isDisplayed()
             )
         )
-        textInputEditText.perform(replaceText("ooty"), closeSoftKeyboard())
+        textInputEditText.perform(replaceText("london"), closeSoftKeyboard())
 
         val textInputEditText2 = onView(
             allOf(
-                withId(R.id.input_find_city_weather), withText("ooty"),
+                withId(R.id.input_find_city_weather), withText("london"),
                 childAtPosition(
                     allOf(
                         withId(R.id.toolbar),
@@ -66,7 +65,6 @@ class UITest3 {
             )
         )
         textInputEditText2.perform(pressImeActionButton())
-
         Thread.sleep(3000)
 
         val appCompatImageView = onView(
@@ -86,8 +84,7 @@ class UITest3 {
             )
         )
         appCompatImageView.perform(click())
-
-        pressBack()
+        Thread.sleep(2000)
     }
 
     private fun childAtPosition(

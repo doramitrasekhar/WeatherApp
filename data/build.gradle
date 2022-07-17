@@ -58,4 +58,12 @@ dependencies {
     kapt "androidx.room:room-compiler:${rootProject.ext.room_version}"
     implementation "androidx.room:room-ktx:${rootProject.ext.room_version}"
     testImplementation "androidx.room:room-testing:${rootProject.ext.room_version}"
+    implementation "androidx.arch.core:core-testing:${rootProject.ext.core_testing}"
+    testImplementation "androidx.arch.core:core-testing:${rootProject.ext.core_testing}"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:${rootProject.ext.kotlinx_coroutines}"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:${rootProject.ext.kotlinx_coroutines}"
+    testImplementation "io.mockk:mockk:${rootProject.ext.mockk}"
+    androidTestImplementation "io.mockk:mockk-android:${rootProject.ext.mockk}"
+    //MockWebserver
+    testImplementation('com.squareup.okhttp3:mockwebserver:4.9.1')
 }

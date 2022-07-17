@@ -15,15 +15,15 @@ import org.junit.runner.RunWith
 
 @LargeTest
 @RunWith(AndroidJUnit4::class)
-class UITest1 {
+class WeatherInfoUserInterfaceLaunchAssertionTest {
 
     @Rule
     @JvmField
     var mActivityScenarioRule = ActivityScenarioRule(MainActivity::class.java)
 
     @Test
-    fun mainActivityTest() {
-        Thread.sleep(1000)
+    fun weatherInfoUserInterfaceLaunchAssertionTest() {
+        Thread.sleep(2000)
         val textView = onView(
             allOf(
                 withId(R.id.text_label_search_for_city), withText("Search for a city"),
@@ -36,7 +36,6 @@ class UITest1 {
                 isDisplayed()
             )
         )
-        Thread.sleep(3000)
-        textView.check(matches(isDisplayed()))
+        textView.check(matches(withText("Search for a city")))
     }
 }

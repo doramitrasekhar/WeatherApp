@@ -20,14 +20,14 @@ import org.junit.runner.RunWith
 
 @LargeTest
 @RunWith(AndroidJUnit4::class)
-class UITest2 {
+class WeatherInfoUserInterfaceWrongInputTest {
 
     @Rule
     @JvmField
     var mActivityScenarioRule = ActivityScenarioRule(MainActivity::class.java)
 
     @Test
-    fun mainActivityTest3() {
+    fun weatherInfoUserInterfaceWrongInputTest() {
         Thread.sleep(2000)
         val textInputEditText = onView(
             allOf(
@@ -45,11 +45,11 @@ class UITest2 {
                 isDisplayed()
             )
         )
-        textInputEditText.perform(replaceText("london"), closeSoftKeyboard())
+        textInputEditText.perform(replaceText("djasldjqweo"), closeSoftKeyboard())
 
         val textInputEditText2 = onView(
             allOf(
-                withId(R.id.input_find_city_weather), withText("london"),
+                withId(R.id.input_find_city_weather), withText("djasldjqweo"),
                 childAtPosition(
                     allOf(
                         withId(R.id.toolbar),
@@ -64,7 +64,7 @@ class UITest2 {
             )
         )
         textInputEditText2.perform(pressImeActionButton())
-        Thread.sleep(4000)
+        Thread.sleep(2000)
     }
 
     private fun childAtPosition(

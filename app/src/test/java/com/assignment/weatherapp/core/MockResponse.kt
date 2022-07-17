@@ -1,11 +1,14 @@
 package com.assignment.weatherapp.core
 
+import android.content.Context
+import com.assignment.data.util.Constants
+import com.assignment.domain.common.ErrorEntity
 import com.assignment.domain.entities.WeatherInfo
-import com.assignment.weatherapp.entities.WeatherInfoResult
+import com.assignment.weatherapp.mappers.WeatherInfoErrorViewMapper
 import com.assignment.weatherapp.mappers.WeatherInfoResultMapper
-import com.assignment.weatherapp.util.AppConstants
-import com.assignment.weatherapp.util.Resource
+import com.assignment.weatherapp.util.WeatherInfoState
 import com.google.gson.Gson
+import com.assignment.domain.common.Result as MyResult
 
 object MockResponse {
 
@@ -19,22 +22,24 @@ object MockResponse {
         return Gson().fromJson(jsonString, WeatherInfo::class.java)
     }
 
-    fun getSuccessResult(): com.assignment.domain.common.Result<WeatherInfo> {
-        return  com.assignment.domain.common.Result.Success(getWeatherResult())
+    fun getSuccessResult(): MyResult<WeatherInfo> {
+        return MyResult.Success(getWeatherResult())
     }
 
-    fun getFailureResult(): com.assignment.domain.common.Result<WeatherInfo> {
-        return  com.assignment.domain.common.Result.Error(Exception(error_message))
+    fun getLiveDataSuccessResult(): WeatherInfoState {
+        return WeatherInfoState(data = WeatherInfoResultMapper().mapToView(getWeatherResult()))
     }
 
-    fun getSuccessResource(weatherInfo: WeatherInfo): Resource<WeatherInfoResult> {
-        return  Resource.success(
-            WeatherInfoResultMapper().toWeatherInfo(
-                weatherInfo
-        ))
+
+    fun getLiveDataErrorResult(mContext: Context): WeatherInfoState {
+        return WeatherInfoState(error = WeatherInfoErrorViewMapper(context = mContext).mapToView(
+            getErrorResult().errorEntity))
     }
 
-    fun getErrorResource(): Resource<Nothing> {
-        return Resource.error(AppConstants.SOMETHING_WENT_WRONG, null)
+    fun getErrorResult(): MyResult.Error<WeatherInfo> {
+        return MyResult.Error(
+            message = Constants.WRONG_INPUT,
+            errorEntity = ErrorEntity.Unknown
+        )
     }
 }

@@ -1,4 +1,4 @@
-package com.assignment.weatherapp
+package com.assignment.weatherapp.core
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

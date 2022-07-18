@@ -7,6 +7,9 @@ import com.assignment.weatherapp.entities.ErrorUIModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
+/**
+ * Error Mapper class
+ */
 class WeatherInfoErrorViewMapper @Inject constructor(@ApplicationContext private val context: Context) :
     Mapper<ErrorUIModel, ErrorEntity?> {
 

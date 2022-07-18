@@ -7,10 +7,17 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 object AppUtils {
+
+    /**
+     * Get the Current DateTime
+     */
     @SuppressLint("SimpleDateFormat")
     fun getCurrentDateTime(dateFormat: String): String =
         SimpleDateFormat(dateFormat).format(Date())
 
+    /**
+     * Get the weather Status Temperature
+     */
     fun getWeatherStatusFromTemperature(tempVal: Double): WeatherStatus {
         return if (tempVal > 18) {
             WeatherStatus.SUNNY
@@ -21,10 +28,16 @@ object AppUtils {
         }
     }
 
+    /**
+     * Get the Number from string
+     */
     fun getNumberFromString(input: String): String {
         return input.replace("[^0-9]".toRegex(), "")
     }
 
+    /**
+     * Gets the weather Status
+     */
     fun getWeatherStatus(description: String, tempVal: String): WeatherStatus {
         if (description == "Sunny") {
             return WeatherStatus.SUNNY

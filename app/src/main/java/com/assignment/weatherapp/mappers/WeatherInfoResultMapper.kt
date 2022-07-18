@@ -6,6 +6,9 @@ import com.assignment.weatherapp.entities.ForecastResult
 import com.assignment.weatherapp.entities.WeatherInfoResult
 import javax.inject.Inject
 
+/**
+ * Success mapper class
+ */
 class WeatherInfoResultMapper @Inject constructor() : Mapper<WeatherInfoResult, WeatherInfo> {
     override fun mapToView(input: WeatherInfo): WeatherInfoResult {
         return WeatherInfoResult(input.description, input.forecast.map {

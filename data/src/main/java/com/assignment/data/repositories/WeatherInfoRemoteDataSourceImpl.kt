@@ -65,13 +65,13 @@ class WeatherInfoRemoteDataSourceImpl @Inject constructor(
      * Gets the error Result
      */
     private fun getErrorResult(response: Response<WeatherApiResponse>): Result.Error<WeatherInfo> {
-        when (response.raw().code) {
-            SERVICE_UNAVAILABLE_CODE -> return Result.Error(
+        return when (response.raw().code) {
+            SERVICE_UNAVAILABLE_CODE -> Result.Error(
                 message = Constants.SERVICE_UNAVAILABLE,
                 errorEntity = ErrorEntity.ServiceUnavailable
             )
             else -> {
-                return Result.Error(
+                Result.Error(
                     message = Constants.NOT_FOUND,
                     errorEntity = ErrorEntity.NotFound
                 )

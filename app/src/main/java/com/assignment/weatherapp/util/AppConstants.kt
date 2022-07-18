@@ -8,5 +8,5 @@ object AppConstants {
     const val DAY_TITLE = "Day"
     const val NOT_AVAILABLE_TITLE = "NA"
     const val SOMETHING_WENT_WRONG = "Something Went Wrong"
-    const val SERVICE_UNAVAILABLE = "SERVICE_UNAVAILABLE"
+    const val SERVICE_UNAVAILABLE = "Service Unavailable"
 }

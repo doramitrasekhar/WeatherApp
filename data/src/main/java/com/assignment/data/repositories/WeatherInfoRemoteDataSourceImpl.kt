@@ -31,10 +31,10 @@ class WeatherInfoRemoteDataSourceImpl @Inject constructor(
                     if (response.isSuccessful && mapper.isValidResponse(dataLayerResponse)) {
                         return@withContext Result.Success(dataLayerResponse)
                     } else {
-                        return@withContext getErrorResult(response)
+                        return@withContext getWrongInputResult()
                     }
                 } ?: run {
-                    return@withContext getWrongInputResult()
+                    return@withContext getErrorResult(response)
                 }
             } catch (e: Exception) {
                 return@withContext getExceptionResult(e)

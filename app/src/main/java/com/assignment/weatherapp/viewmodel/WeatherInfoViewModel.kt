@@ -12,7 +12,6 @@ import com.assignment.weatherapp.mappers.WeatherInfoErrorViewMapper
 import com.assignment.weatherapp.mappers.WeatherInfoResultMapper
 import com.assignment.weatherapp.util.WeatherInfoState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -28,6 +27,9 @@ class WeatherInfoViewModel @Inject constructor(
     val weatherInfo: LiveData<WeatherInfoState>
         get() = _weatherInfo
 
+    /**
+     * Fetches the weather Info
+     */
     fun getWeatherInfo(countryName: String) {
         viewModelScope.launch {
             _weatherInfo.postValue(WeatherInfoState(isLoading = true))
@@ -48,7 +50,9 @@ class WeatherInfoViewModel @Inject constructor(
         }
     }
 
-    /// updates the error result
+    /**
+     * updates the error result
+     */
     private fun updateErrorResult(weatherInfoResult: Result<WeatherInfo>) {
         _weatherInfo.postValue(
             WeatherInfoState(
@@ -59,7 +63,9 @@ class WeatherInfoViewModel @Inject constructor(
         )
     }
 
-    /// update the result to local database
+    /**
+     * update the result to local database
+     */
     private suspend fun updateResultToLocalDatabase(
         countryName: String,
         weatherInfo: WeatherInfo
@@ -72,7 +78,9 @@ class WeatherInfoViewModel @Inject constructor(
         )
     }
 
-    /// Update the data to the fragment
+    /**
+     * Update the data to the fragment
+     */
     private fun updateWeatherInfoToUI(weatherInfo: WeatherInfo) {
         _weatherInfo.postValue(
             WeatherInfoState(

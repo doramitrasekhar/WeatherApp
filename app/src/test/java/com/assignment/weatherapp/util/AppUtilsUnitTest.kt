@@ -7,7 +7,7 @@ import org.junit.Test
 class AppUtilsUnitTest {
     @Test
     fun when_GetCurrentDateTime_Expect_CurrentDateTime(){
-        val expected = "Sun, 17 Jul 2022"
+        val expected = "Mon, 18 Jul 2022"
         val result = AppUtils.getCurrentDateTime(AppConstants.DATE_FORMAT)
         assertEquals(expected,result)
     }

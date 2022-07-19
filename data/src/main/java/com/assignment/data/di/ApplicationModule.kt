@@ -16,30 +16,16 @@ class ApplicationModule {
 
     @Provides
     @Singleton
-    fun provideDataSourceImpl(weatherInfoRemoteSourceImpl: WeatherInfoRemoteDataSourceImpl): WeatherInfoRemoteDataSource =
-        weatherInfoRemoteSourceImpl
-
-    @Provides
-    @Singleton
-    fun provideLocalDataSourceImpl(weatherInfoLocalDataSourceImpl: WeatherInfoLocalDataSourceImpl): WeatherInfoLocalDataSource =
-        weatherInfoLocalDataSourceImpl
-
-
-    @Provides
-    @Singleton
     fun provideWeatherRepoImpl(
         weatherInfoLocalDataSourceImpl: WeatherInfoLocalDataSourceImpl,
         weatherInfoRemoteSourceImpl: WeatherInfoRemoteDataSourceImpl
     ): WeatherRepositoryImpl {
-        return WeatherRepositoryImpl(
-            provideLocalDataSourceImpl(weatherInfoLocalDataSourceImpl),
-            provideDataSourceImpl(weatherInfoRemoteSourceImpl)
-        )
+        return WeatherRepositoryImpl(weatherInfoLocalDataSourceImpl,weatherInfoRemoteSourceImpl)
     }
 
     @Provides
     @Singleton
-    fun provideWeatherInfoUseCase(weatherRepositoryImpl: WeatherRepositoryImpl): WeatherRepository {
+    fun provideWeatherRepository(weatherRepositoryImpl: WeatherRepositoryImpl): WeatherRepository {
         return weatherRepositoryImpl
     }
 

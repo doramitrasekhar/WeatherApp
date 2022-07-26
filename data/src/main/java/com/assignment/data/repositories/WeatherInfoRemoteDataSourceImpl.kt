@@ -28,7 +28,7 @@ class WeatherInfoRemoteDataSourceImpl @Inject constructor(
                 val weatherApiResponse = response.body()
                 weatherApiResponse?.let {
                     val dataLayerResponse = mapper.mapToDomainLayer(weatherApiResponse)
-                    if (response.isSuccessful && mapper.isValidResponse(dataLayerResponse)) {
+                    if (response.isSuccessful) {
                         return@withContext Result.Success(dataLayerResponse)
                     } else {
                         return@withContext getWrongInputResult()

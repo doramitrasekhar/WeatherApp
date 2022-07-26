@@ -4,8 +4,9 @@ import com.assignment.domain.common.Result
 import com.assignment.domain.entities.WeatherEntityInfo
 import com.assignment.domain.entities.WeatherInfo
 import com.assignment.domain.repositories.WeatherRepository
+import javax.inject.Inject
 
-class WeatherRepositoryImpl(
+class WeatherRepositoryImpl @Inject constructor(
     private val localDataSource: WeatherInfoLocalDataSource,
     private val remoteDataSource: WeatherInfoRemoteDataSource
 ) :

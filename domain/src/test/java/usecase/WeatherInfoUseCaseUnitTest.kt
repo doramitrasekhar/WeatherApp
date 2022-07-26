@@ -6,7 +6,7 @@ import util.MockResponse.getErrorResult
 import util.MockResponse.getSuccessResult
 import com.assignment.domain.common.Result
 import com.assignment.domain.repositories.WeatherRepository
-import com.assignment.domain.usecases.WeatherInfoUseCase
+import com.assignment.domain.usecases.GetWeatherInfoUseCase
 import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
 import io.mockk.mockk
@@ -23,17 +23,17 @@ class WeatherInfoUseCaseUnitTest {
     @MockK
     private val weatherRepository = mockk<WeatherRepository>(relaxed = true)
 
-    private lateinit var weatherInfoUseCase: WeatherInfoUseCase
+    private lateinit var weatherInfoUseCase: GetWeatherInfoUseCase
 
     @Before
     fun setUp() {
-        weatherInfoUseCase = WeatherInfoUseCase(
+        weatherInfoUseCase = GetWeatherInfoUseCase(
             weatherRepository
         )
     }
 
     @Test
-    fun when_WeatherInfoUseCase_Expect_WeatherInfoDescription() = runTest {
+    fun `GIVEN GetWeatherInfoUseCase WHEN called THEN should return weather info description`() = runTest {
         coEvery { weatherRepository.getRemoteWeatherInfo(countryName) } returns getSuccessResult()
         when (val weatherInfoResult = weatherInfoUseCase.invoke(countryName)) {
             is Result.Success -> {
@@ -46,7 +46,7 @@ class WeatherInfoUseCaseUnitTest {
     }
 
     @Test
-    fun when_WeatherInfoUseCase_Expect_WeatherInfoTemperature() = runTest {
+    fun `GIVEN GetWeatherInfoUseCase WHEN called THEN should return weather info temperature`() = runTest {
         coEvery { weatherRepository.getRemoteWeatherInfo(countryName) } returns getSuccessResult()
         when (val weatherInfoResult = weatherInfoUseCase.invoke(countryName)) {
             is Result.Success -> {
@@ -59,7 +59,7 @@ class WeatherInfoUseCaseUnitTest {
     }
 
     @Test
-    fun when_WeatherInfoUseCase_Expect_ErrorInfo() = runTest {
+    fun `GIVEN GetWeatherInfoUseCase WHEN called THEN should return error info`() = runTest {
         coEvery { weatherRepository.getRemoteWeatherInfo(countryName) } returns getErrorResult()
         when (val weatherInfoResult = weatherInfoUseCase.invoke(countryName)) {
             is Result.Error -> {

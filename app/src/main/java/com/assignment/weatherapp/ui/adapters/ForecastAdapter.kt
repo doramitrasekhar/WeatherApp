@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.text.isDigitsOnly
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.assignment.weatherapp.R
 import com.assignment.weatherapp.databinding.ForecastItemBinding
@@ -15,9 +16,12 @@ import com.assignment.weatherapp.util.AppConstants.NOT_AVAILABLE_TITLE
 import com.assignment.weatherapp.util.AppConstants.SPACE
 import com.assignment.weatherapp.util.AppConstants.WIND_TITLE
 import com.assignment.weatherapp.util.AppUtils
+import com.assignment.weatherapp.util.ForecastAdapterDiffUtil
 
-class ForecastAdapter(private val forecastItems: List<ForecastResult>) :
+class ForecastAdapter :
     RecyclerView.Adapter<ForecastAdapter.ForeCastItemViewHolder>() {
+
+    private var forecastItems = mutableListOf<ForecastResult>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ForeCastItemViewHolder {
         val binding =
@@ -28,6 +32,18 @@ class ForecastAdapter(private val forecastItems: List<ForecastResult>) :
     override fun onBindViewHolder(holder: ForeCastItemViewHolder, position: Int) {
         val forecastItem = forecastItems[position]
         holder.bind(forecastItem)
+    }
+
+    fun loadItems(forecastItems: MutableList<ForecastResult>) {
+        this.forecastItems = forecastItems
+    }
+
+    fun updateLoadItems(newForecastItems: List<ForecastResult>) {
+        val diffCallback = ForecastAdapterDiffUtil(forecastItems, newForecastItems)
+        val diffResult = DiffUtil.calculateDiff(diffCallback)
+        forecastItems.clear()
+        forecastItems.addAll(newForecastItems)
+        diffResult.dispatchUpdatesTo(this)
     }
 
     override fun getItemCount(): Int {

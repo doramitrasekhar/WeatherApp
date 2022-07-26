@@ -6,8 +6,8 @@ import com.assignment.weatherapp.entities.WeatherInfoResult
 /**
  * Model class to load weather info status
  */
-data class WeatherInfoState(
-    val isLoading: Boolean = false,
-    val data: WeatherInfoResult? = null,
-    val error: ErrorUIModel? = null
-)
+sealed class WeatherInfoState {
+    class Success(var data: WeatherInfoResult) : WeatherInfoState()
+    class Error(var error: ErrorUIModel) : WeatherInfoState()
+    class Loading(var isLoading: Boolean) : WeatherInfoState()
+}

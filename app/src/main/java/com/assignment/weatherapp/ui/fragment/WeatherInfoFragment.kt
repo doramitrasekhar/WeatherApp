@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.assignment.weatherapp.R
 import com.assignment.weatherapp.databinding.WeatherInfoBinding
+import com.assignment.weatherapp.entities.ErrorUIModel
 import com.assignment.weatherapp.entities.WeatherInfoResult
 import com.assignment.weatherapp.entities.WeatherStatus
 import com.assignment.weatherapp.ui.adapters.ForecastAdapter
@@ -41,15 +42,12 @@ class WeatherInfoFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        with(_binding){
+        with(_binding) {
             /// initialises the recycler view
             initializeRecyclerView(this)
-            @Suppress("NAME_SHADOWING")
             inputFindCityWeather.setOnEditorActionListener { view, actionId, _ ->
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    if ((view as EditText).text.toString().isNotEmpty()) {
-                        weatherInfoViewModel.getWeatherInfo(view.text.toString())
-                    }
+                if (actionId == EditorInfo.IME_ACTION_DONE && (view as EditText).text.isNotEmpty()) {
+                    weatherInfoViewModel.getWeatherInfo(view.text.toString())
                 }
                 false
             }
@@ -59,12 +57,11 @@ class WeatherInfoFragment : Fragment() {
             }
             /// listen to weatherInfo LiveData
             weatherInfoViewModel.weatherInfo.observe(viewLifecycleOwner) { weatherInfoState ->
-                /// handle view loding state
-                handleLoadingState(weatherInfoState)
-                /// handle error state
-                handleErrorState(weatherInfoState)
-                /// handle success state
-                handleSuccessState(weatherInfoState)
+                when (weatherInfoState) {
+                    is WeatherInfoState.Loading -> handleLoadingState(weatherInfoState.isLoading)
+                    is WeatherInfoState.Success -> handleSuccessState(weatherInfoState.data)
+                    is WeatherInfoState.Error -> handleErrorState(weatherInfoState.error)
+                }
             }
         }
     }
@@ -72,8 +69,8 @@ class WeatherInfoFragment : Fragment() {
     /**
      * Handles the loading State
      */
-    private fun handleLoadingState(weatherInfoState: WeatherInfoState) {
-        if (weatherInfoState.isLoading) {
+    private fun handleLoadingState(isLoading: Boolean) {
+        if (isLoading) {
             LoadingScreen.displayLoadingWithText(
                 context,
                 getString(R.string.fetching_data),
@@ -85,8 +82,8 @@ class WeatherInfoFragment : Fragment() {
     /**
      * Handles the Error State
      */
-    private fun handleErrorState(weatherInfoState: WeatherInfoState) {
-        weatherInfoState.error?.let {
+    private fun handleErrorState(errorUIModel: ErrorUIModel) {
+        errorUIModel.let {
             LoadingScreen.hideLoading()
             if (it.message == SERVICE_UNAVAILABLE) {
                 Toast.makeText(
@@ -106,15 +103,16 @@ class WeatherInfoFragment : Fragment() {
      * Handles the success state
      */
     private fun WeatherInfoBinding.handleSuccessState(
-        weatherInfoState: WeatherInfoState
+        weatherInfoResult: WeatherInfoResult
     ) {
-        weatherInfoState.data?.let {
+        weatherInfoResult.let {
             LoadingScreen.hideLoading()
             /// update views
             updateViewVisibility(this)
             /// sets the adapter
-            recyclerViewSearchedCityTemperature.adapter =
-                ForecastAdapter(it.forecast)
+            recyclerViewSearchedCityTemperature.adapter = ForecastAdapter().apply {
+                this.loadItems(it.forecast.toMutableList())
+            }
             /// sets text to views
             setTextDetailsToView(this, it)
         }
@@ -123,7 +121,10 @@ class WeatherInfoFragment : Fragment() {
     /**
      * sets the text details to view
      */
-    private fun setTextDetailsToView(binding: WeatherInfoBinding, weatherInfoResult: WeatherInfoResult) {
+    private fun setTextDetailsToView(
+        binding: WeatherInfoBinding,
+        weatherInfoResult: WeatherInfoResult
+    ) {
         binding.apply {
             textTodaysDate.text =
                 AppUtils.getCurrentDateTime(AppConstants.DATE_FORMAT)

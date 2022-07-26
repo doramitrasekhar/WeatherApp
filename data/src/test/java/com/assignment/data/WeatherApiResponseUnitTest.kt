@@ -7,7 +7,7 @@ import org.junit.Test
 
 class WeatherApiResponseUnitTest {
     @Test
-    fun when_WeatherApiResponse_Expect_SameWeatherApiResponse() {
+    fun `GIVEN WeatherApiResponse WHEN called THEN should return weather Api Response`() {
         val jsonString =
             "{\"temperature\":\"14 °C\",\"wind\":\"7 km/h\",\"description\":\"Clear\",\"forecast\":[{\"day\":\"1\",\"temperature\":\"25 °C\",\"wind\":\"18 km/h\"},{\"day\":\"2\",\"temperature\":\" °C\",\"wind\":\" km/h\"},{\"day\":\"3\",\"temperature\":\"10 °C\",\"wind\":\" km/h\"}]}"
         val response = Gson().fromJson(jsonString, WeatherApiResponse::class.java)

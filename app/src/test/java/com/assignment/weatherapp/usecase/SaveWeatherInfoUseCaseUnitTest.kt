@@ -35,7 +35,7 @@ class SaveWeatherInfoUseCaseUnitTest {
     }
 
     @Test
-    fun when_SaveWeatherInfoUseCase_Expect_Unit() = runTest {
+    fun `GIVEN SaveWeatherInfoUseCase When called Then Should return Unit`() = runTest {
         coEvery {
             weatherRepository.saveWeatherInfoInDB(
                 weatherEntityInfo = WeatherEntityInfo(

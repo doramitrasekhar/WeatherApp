@@ -5,16 +5,14 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.assignment.data.util.Constants
 import com.assignment.domain.entities.WeatherEntityInfo
+import com.assignment.domain.usecases.GetWeatherInfoUseCase
 import com.assignment.domain.usecases.SaveWeatherInfoUseCase
-import com.assignment.domain.usecases.WeatherInfoUseCase
 import com.assignment.weatherapp.R
-import com.assignment.weatherapp.core.TestCoroutineRule
 import com.assignment.weatherapp.core.MockResponse.countryName
 import com.assignment.weatherapp.core.MockResponse.getErrorResult
-import com.assignment.weatherapp.core.MockResponse.getLiveDataErrorResult
-import com.assignment.weatherapp.core.MockResponse.getLiveDataSuccessResult
 import com.assignment.weatherapp.core.MockResponse.getSuccessResult
 import com.assignment.weatherapp.core.MockResponse.getWeatherResult
+import com.assignment.weatherapp.core.TestCoroutineRule
 import com.assignment.weatherapp.mappers.WeatherInfoErrorViewMapper
 import com.assignment.weatherapp.mappers.WeatherInfoResultMapper
 import com.assignment.weatherapp.util.WeatherInfoState
@@ -26,6 +24,7 @@ import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -41,7 +40,7 @@ internal class WeatherInfoViewModelUT {
     var coroutinesTestRule = TestCoroutineRule()
 
     private lateinit var weatherInfoViewModel: WeatherInfoViewModel
-    private val weatherInfoUseCase = mockk<WeatherInfoUseCase>()
+    private val weatherInfoUseCase = mockk<GetWeatherInfoUseCase>()
     private val saveWeatherInfoUseCase = mockk<SaveWeatherInfoUseCase>()
     private val weatherInfoResultMapper = WeatherInfoResultMapper()
     private val mContextMock = mockk<Context>(relaxed = true)
@@ -59,8 +58,7 @@ internal class WeatherInfoViewModelUT {
     }
 
     @Test
-    fun when_GetWeatherInfo_Expect_WeatherInfoDetails() = runTest {
-        //GIVEN
+    fun `GIVEN weatherInfoUseCase WHEN called THEN should return weather info response`() = runTest {
         coEvery { weatherInfoUseCase.invoke(countryName) } returns getSuccessResult()
         coEvery {
             saveWeatherInfoUseCase.invoke(
@@ -70,34 +68,28 @@ internal class WeatherInfoViewModelUT {
                 )
             )
         } returns Unit
-        // WHEN
+
         weatherInfoViewModel.getWeatherInfo(countryName)
-        // THEN
-        assertEquals(
-            weatherInfoViewModel.weatherInfo.value, WeatherInfoState(
-                data = weatherInfoResultMapper.mapToView(
-                    getWeatherResult()
-                )
-            )
-        )
+
+        val result = weatherInfoViewModel.weatherInfo.value is WeatherInfoState.Success
+        assertTrue(result)
     }
 
     @Test
-    fun when_GetWeatherInfo_Expect_ErrorInfoDetails() = runTest {
-        //GIVEN
+    fun `GIVEN weatherInfoUseCase WHEN called THEN should return error info response`() = runTest {
         every { mContextMock.getString(R.string.unknown_error) } returns Constants.UNKNOWN
         coEvery { weatherInfoUseCase.invoke(countryName) } returns getErrorResult()
-        // WHEN
+
         weatherInfoViewModel.getWeatherInfo(countryName)
-        // THEN
+
+        val data = weatherInfoViewModel.weatherInfo.value as WeatherInfoState.Error
         assertEquals(
-            weatherInfoViewModel.weatherInfo.value?.error?.message, Constants.UNKNOWN
-        )
+            data.error.message, Constants.UNKNOWN)
     }
 
     @Test
-    fun when_GetWeatherInfo_Expect_SuccessInLiveData() = runTest {
-        //GIVEN
+    fun `GIVEN weatherInfoUseCase WHEN called THEN should return success in live data`() = runTest {
+
         coEvery { weatherInfoUseCase.invoke(countryName) } returns getSuccessResult()
         coEvery {
             saveWeatherInfoUseCase.invoke(
@@ -107,25 +99,25 @@ internal class WeatherInfoViewModelUT {
                 )
             )
         } returns Unit
-        // WHEN
+
         weatherInfoViewModel.getWeatherInfo(countryName)
         weatherInfoViewModel.weatherInfo
             .observeForever(apiUsersObserver)
-        verify { apiUsersObserver.onChanged(getLiveDataSuccessResult()) }
-        // THEN
+        verify { apiUsersObserver.onChanged(weatherInfoViewModel.weatherInfo.value) }
+
         weatherInfoViewModel.weatherInfo.removeObserver(apiUsersObserver)
     }
 
 
     @Test
-    fun when_GetWeatherInfo_Expect_ErrorInLiveData() = runTest {
+    fun `GIVEN weatherInfoUseCase WHEN called THEN should return Error in live data`() = runTest {
         //GIVEN
         coEvery { weatherInfoUseCase.invoke(countryName) } returns getErrorResult()
         // WHEN
         weatherInfoViewModel.getWeatherInfo(countryName)
         weatherInfoViewModel.weatherInfo
             .observeForever(apiUsersObserver)
-        verify { apiUsersObserver.onChanged(getLiveDataErrorResult(mContextMock)) }
+        verify { apiUsersObserver.onChanged(weatherInfoViewModel.weatherInfo.value) }
         // THEN
         weatherInfoViewModel.weatherInfo.removeObserver(apiUsersObserver)
     }

@@ -4,7 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.assignment.data.util.Constants
 import com.assignment.domain.common.Result
 import com.assignment.domain.repositories.WeatherRepository
-import com.assignment.domain.usecases.WeatherInfoUseCase
+import com.assignment.domain.usecases.GetWeatherInfoUseCase
 import com.assignment.weatherapp.core.MockResponse.countryName
 import com.assignment.weatherapp.core.MockResponse.error_message
 import com.assignment.weatherapp.core.MockResponse.getErrorResult
@@ -30,17 +30,17 @@ class WeatherInfoUseCaseUnitTest {
     @MockK
     private val weatherRepository = mockk<WeatherRepository>(relaxed = true)
 
-    private lateinit var weatherInfoUseCase: WeatherInfoUseCase
+    private lateinit var weatherInfoUseCase: GetWeatherInfoUseCase
 
     @Before
     fun setUp() {
-        weatherInfoUseCase = WeatherInfoUseCase(
+        weatherInfoUseCase = GetWeatherInfoUseCase(
             weatherRepository
         )
     }
 
     @Test
-    fun when_WeatherInfoUseCase_Expect_WeatherInfoDescription() = runTest {
+    fun `GIVEN GetWeatherInfoUseCase When called Then Should return WeatherInfoDescription `() = runTest {
         coEvery { weatherRepository.getRemoteWeatherInfo(countryName) } returns getSuccessResult()
         when (val weatherInfoResult = weatherInfoUseCase.invoke(countryName)) {
             is Result.Success -> {
@@ -53,7 +53,7 @@ class WeatherInfoUseCaseUnitTest {
     }
 
     @Test
-    fun when_WeatherInfoUseCase_Expect_WeatherInfoTemperature() = runTest {
+    fun `GIVEN GetWeatherInfoUseCase When called Then Should return WeatherInfoTemperature`() = runTest {
         coEvery { weatherRepository.getRemoteWeatherInfo(countryName) } returns getSuccessResult()
         when (val weatherInfoResult = weatherInfoUseCase.invoke(countryName)) {
             is Result.Success -> {
@@ -66,7 +66,7 @@ class WeatherInfoUseCaseUnitTest {
     }
 
     @Test
-    fun when_WeatherInfoUseCase_Expect_ErrorInfo() = runTest {
+    fun `GIVEN GetWeatherInfoUseCase When called Then Should return Error`() = runTest {
         coEvery { weatherRepository.getRemoteWeatherInfo(countryName) } returns getErrorResult()
         when (val weatherInfoResult = weatherInfoUseCase.invoke(countryName)) {
             is Result.Error -> {

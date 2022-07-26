@@ -26,13 +26,13 @@ object MockResponse {
         return MyResult.Success(getWeatherResult())
     }
 
-    fun getLiveDataSuccessResult(): WeatherInfoState {
-        return WeatherInfoState(data = WeatherInfoResultMapper().mapToView(getWeatherResult()))
+    fun getLiveDataSuccessResult(): WeatherInfoState.Success {
+        return WeatherInfoState.Success(data = WeatherInfoResultMapper().mapToView(getWeatherResult()))
     }
 
 
     fun getLiveDataErrorResult(mContext: Context): WeatherInfoState {
-        return WeatherInfoState(error = WeatherInfoErrorViewMapper(context = mContext).mapToView(
+        return WeatherInfoState.Error(WeatherInfoErrorViewMapper(context = mContext).mapToView(
             getErrorResult().errorEntity))
     }
 

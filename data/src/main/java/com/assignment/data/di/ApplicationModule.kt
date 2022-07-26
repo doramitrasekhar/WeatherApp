@@ -4,34 +4,29 @@ import com.assignment.data.error.GeneralErrorHandlerImpl
 import com.assignment.data.repositories.*
 import com.assignment.domain.error.ErrorHandler
 import com.assignment.domain.repositories.WeatherRepository
+import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-class ApplicationModule {
+abstract class ApplicationModule {
+    @Binds
+    abstract fun provideWeatherInfoRemoteDataSource(
+        weatherInfoRemoteDataSourceImpl: WeatherInfoRemoteDataSourceImpl
+    ): WeatherInfoRemoteDataSource
 
-    @Provides
-    @Singleton
-    fun provideWeatherRepoImpl(
-        weatherInfoLocalDataSourceImpl: WeatherInfoLocalDataSourceImpl,
-        weatherInfoRemoteSourceImpl: WeatherInfoRemoteDataSourceImpl
-    ): WeatherRepositoryImpl {
-        return WeatherRepositoryImpl(weatherInfoLocalDataSourceImpl,weatherInfoRemoteSourceImpl)
-    }
+    @Binds
+    abstract fun provideWeatherInfoLocalDataSource(
+        weatherInfoLocalDataSourceImpl: WeatherInfoLocalDataSourceImpl
+    ): WeatherInfoLocalDataSource
 
-    @Provides
-    @Singleton
-    fun provideWeatherRepository(weatherRepositoryImpl: WeatherRepositoryImpl): WeatherRepository {
-        return weatherRepositoryImpl
-    }
+    @Binds
+    abstract fun provideWeatherRepoImpl(
+        weatherRepositoryImpl: WeatherRepositoryImpl
+    ): WeatherRepository
 
-    @Provides
-    @Singleton
-    fun provideErrorHandler(): ErrorHandler {
-        return GeneralErrorHandlerImpl()
-    }
+    @Binds
+    abstract fun provideErrorHandler(generalErrorHandlerImpl: GeneralErrorHandlerImpl): ErrorHandler
 }

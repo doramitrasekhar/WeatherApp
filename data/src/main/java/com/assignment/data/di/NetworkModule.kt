@@ -1,6 +1,5 @@
 package com.assignment.data.di
 
-import android.content.Context
 import android.util.Log
 import com.assignment.data.BuildConfig
 import com.assignment.data.api.WeatherApi
@@ -9,20 +8,24 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import okhttp3.*
+import okhttp3.Interceptor
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.io.File
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 class NetworkModule {
-    private val READ_TIMEOUT = 30
-    private val WRITE_TIMEOUT = 30
-    private val CONNECTION_TIMEOUT = 10
-    private val CACHE_SIZE_BYTES = 10 * 1024 * 1024L
+
+    companion object {
+        private const val READ_TIMEOUT = 30
+        private const val WRITE_TIMEOUT = 30
+        private const val CONNECTION_TIMEOUT = 10
+    }
 
     @Provides
     fun provideBaseUrl() = BuildConfig.BASE_URL
@@ -30,20 +33,25 @@ class NetworkModule {
     @Provides
     @Singleton
     fun provideRetrofit(client: OkHttpClient): Retrofit {
-        return Retrofit.Builder().baseUrl(BuildConfig.BASE_URL).client(client).addConverterFactory(
-            GsonConverterFactory.create(GsonBuilder().create())
-        ).build()
+        return Retrofit.Builder().apply {
+            baseUrl(BuildConfig.BASE_URL)
+            client(client)
+            addConverterFactory(
+                GsonConverterFactory.create(GsonBuilder().create())
+            )
+        }.build()
     }
 
     @Provides
     @Singleton
     fun provideOkHttpClient(headerInterceptor: Interceptor): OkHttpClient {
         val okHttpClientBuilder = OkHttpClient().newBuilder()
-        okHttpClientBuilder.readTimeout(READ_TIMEOUT.toLong(), TimeUnit.SECONDS)
-        okHttpClientBuilder.writeTimeout(WRITE_TIMEOUT.toLong(), TimeUnit.SECONDS)
-        okHttpClientBuilder.connectTimeout(CONNECTION_TIMEOUT.toLong(), TimeUnit.SECONDS)
-        okHttpClientBuilder.addInterceptor(headerInterceptor)
-        return okHttpClientBuilder.build()
+        return okHttpClientBuilder.apply {
+            readTimeout(READ_TIMEOUT.toLong(), TimeUnit.SECONDS)
+            writeTimeout(WRITE_TIMEOUT.toLong(), TimeUnit.SECONDS)
+            connectTimeout(CONNECTION_TIMEOUT.toLong(), TimeUnit.SECONDS)
+            addInterceptor(headerInterceptor)
+        }.build()
     }
 
     @Provides
@@ -54,20 +62,12 @@ class NetworkModule {
 
     @Provides
     @Singleton
-    fun provideCache(context: Context): Cache {
-        val httpCacheDirectory = File(context.cacheDir.absolutePath, "HttpCache")
-        return Cache(httpCacheDirectory, CACHE_SIZE_BYTES)
-    }
-
-    @Provides
-    @Singleton
     fun provideApi(retrofit: Retrofit): WeatherApi {
         return retrofit.create(WeatherApi::class.java)
     }
 }
 
 class ErrorInterceptor : Interceptor {
-    private val NETWORK_TAG = "NetworkModule"
     override fun intercept(chain: Interceptor.Chain): Response {
         val request: Request = chain.request()
         val response = chain.proceed(request)
@@ -83,5 +83,9 @@ class ErrorInterceptor : Interceptor {
             }
         }
         return response
+    }
+
+    companion object {
+        private const val NETWORK_TAG = "NetworkModule"
     }
 }

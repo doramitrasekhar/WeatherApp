@@ -40,7 +40,7 @@ class WeatherApiUnitTest {
     }
 
     @Test
-    fun when_GetWeatherInfo_Expect_WeatherInfoDetails() = runTest {
+    fun `GIVEN GetWeatherInfo WHEN called THEN should return weather info details`() = runTest {
         val BASE_URL = server.url("/").toString()
         val okHttpClient = OkHttpClient
             .Builder()
@@ -59,7 +59,7 @@ class WeatherApiUnitTest {
     }
 
     @Test
-    fun when_GetWeatherInfo_Expect_WeatherErrorInfo() = runTest {
+    fun `GIVEN GetWeatherInfo WHEN called THEN should return weather error info`() = runTest {
         val BASE_URL = server.url("/").toString()
         val okHttpClient = OkHttpClient
             .Builder()

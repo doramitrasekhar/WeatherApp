@@ -6,8 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.assignment.domain.common.Result
 import com.assignment.domain.entities.WeatherInfo
+import com.assignment.domain.usecases.GetWeatherInfoUseCase
 import com.assignment.domain.usecases.SaveWeatherInfoUseCase
-import com.assignment.domain.usecases.WeatherInfoUseCase
 import com.assignment.weatherapp.mappers.WeatherInfoErrorViewMapper
 import com.assignment.weatherapp.mappers.WeatherInfoResultMapper
 import com.assignment.weatherapp.util.WeatherInfoState
@@ -17,7 +17,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class WeatherInfoViewModel @Inject constructor(
-    private val weatherInfoUseCase: WeatherInfoUseCase,
+    private val getWeatherInfoUseCase: GetWeatherInfoUseCase,
     private val saveWeatherInfoUseCase: SaveWeatherInfoUseCase,
     private val weatherInfoErrorViewMapper: WeatherInfoErrorViewMapper,
     private val weatherInfoResultMapper: WeatherInfoResultMapper
@@ -32,8 +32,8 @@ class WeatherInfoViewModel @Inject constructor(
      */
     fun getWeatherInfo(countryName: String) {
         viewModelScope.launch {
-            _weatherInfo.postValue(WeatherInfoState(isLoading = true))
-            when (val weatherInfoResult = weatherInfoUseCase(countryName)) {
+            _weatherInfo.postValue(WeatherInfoState.Loading(isLoading = true))
+            when (val weatherInfoResult = getWeatherInfoUseCase(countryName)) {
                 is Result.Success -> {
                     val weatherInfo = weatherInfoResult.data
                     weatherInfo?.let {
@@ -55,8 +55,8 @@ class WeatherInfoViewModel @Inject constructor(
      */
     private fun updateErrorResult(weatherInfoResult: Result<WeatherInfo>) {
         _weatherInfo.postValue(
-            WeatherInfoState(
-                error = weatherInfoErrorViewMapper.mapToView(
+            WeatherInfoState.Error(
+                weatherInfoErrorViewMapper.mapToView(
                     weatherInfoResult.errorEntity
                 )
             )
@@ -83,8 +83,8 @@ class WeatherInfoViewModel @Inject constructor(
      */
     private fun updateWeatherInfoToUI(weatherInfo: WeatherInfo) {
         _weatherInfo.postValue(
-            WeatherInfoState(
-                data = weatherInfoResultMapper.mapToView(
+            WeatherInfoState.Success(
+                weatherInfoResultMapper.mapToView(
                     weatherInfo
                 )
             )

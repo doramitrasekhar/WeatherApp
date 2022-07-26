@@ -72,7 +72,7 @@ class WeatherApiUnitTest {
         server.enqueue(MockResponse().setResponseCode(400))
         val repository = WeatherInfoRemoteDataSourceImpl(service, dispatcher, mapper, errorHandler)
         val resp = repository.getWeatherInfo("london")
-        assertEquals(resp.message, Constants.WRONG_INPUT)
+        assertEquals(resp.message, Constants.NOT_FOUND)
     }
 
     @After

@@ -23,6 +23,7 @@ import com.assignment.weatherapp.util.AppConstants.COLON
 import com.assignment.weatherapp.util.AppConstants.SERVICE_UNAVAILABLE
 import com.assignment.weatherapp.util.AppConstants.SPACE
 import com.assignment.weatherapp.util.AppConstants.WIND_TITLE
+import com.assignment.weatherapp.util.WeatherInfoState.*
 import com.assignment.weatherapp.viewmodel.WeatherInfoViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -58,9 +59,9 @@ class WeatherInfoFragment : Fragment() {
             /// listen to weatherInfo LiveData
             weatherInfoViewModel.weatherInfo.observe(viewLifecycleOwner) { weatherInfoState ->
                 when (weatherInfoState) {
-                    is WeatherInfoState.Loading -> handleLoadingState(weatherInfoState.isLoading)
-                    is WeatherInfoState.Success -> handleSuccessState(weatherInfoState.data)
-                    is WeatherInfoState.Error -> handleErrorState(weatherInfoState.error)
+                    is Loading -> handleLoadingState(isLoading = weatherInfoState.isLoading)
+                    is Success -> handleSuccessState(weatherInfoResult = weatherInfoState.data)
+                    is Error -> handleErrorState(errorUIModel = weatherInfoState.error)
                 }
             }
         }

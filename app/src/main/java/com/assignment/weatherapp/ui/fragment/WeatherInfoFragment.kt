@@ -9,6 +9,9 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,6 +29,8 @@ import com.assignment.weatherapp.util.AppConstants.WIND_TITLE
 import com.assignment.weatherapp.util.WeatherInfoState.*
 import com.assignment.weatherapp.viewmodel.WeatherInfoViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class WeatherInfoFragment : Fragment() {
@@ -57,12 +62,23 @@ class WeatherInfoFragment : Fragment() {
             userInfo.setOnClickListener {
                 findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
             }
-            /// listen to weatherInfo LiveData
-            weatherInfoViewModel.weatherInfo.observe(viewLifecycleOwner) { weatherInfoState ->
-                when (weatherInfoState) {
-                    is Loading -> handleLoadingState(isLoading = weatherInfoState.isLoading)
-                    is Success -> handleSuccessState(weatherInfoResult = weatherInfoState.data)
-                    is Error -> handleErrorState(errorUIModel = weatherInfoState.error)
+            // listen for weather info state flow
+            observeResultState()
+        }
+    }
+
+    /**
+     * Observe on Weather Info Result State
+     */
+    private fun observeResultState() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                weatherInfoViewModel.weatherInfo.collectLatest { weatherInfoState ->
+                    when (weatherInfoState) {
+                        is Loading -> handleLoadingState(isLoading = weatherInfoState.isLoading)
+                        is Success -> handleSuccessState(weatherInfoResult = weatherInfoState.data)
+                        is Error -> handleErrorState(errorUIModel = weatherInfoState.error)
+                    }
                 }
             }
         }
@@ -104,17 +120,17 @@ class WeatherInfoFragment : Fragment() {
     /**
      * Handles the success state
      */
-    private fun WeatherInfoBinding.handleSuccessState(
+    private fun handleSuccessState(
         weatherInfoResult: WeatherInfoResult
     ) {
         weatherInfoResult.let {
             LoadingScreen.hideLoading()
             /// update views
-            updateViewVisibility(this)
+            updateViewVisibility(_binding)
             /// update the recycler view adapter
             forecastAdapter.updateForecastItems(it.forecast)
             /// sets text to views
-            setTextDetailsToView(this, it)
+            setTextDetailsToView(_binding, it)
         }
     }
 

@@ -11,7 +11,6 @@ object AppUtils {
     /**
      * Get the Current DateTime
      */
-    @SuppressLint("SimpleDateFormat")
     fun getCurrentDateTime(dateFormat: String): String =
         SimpleDateFormat(dateFormat).format(Date())
 

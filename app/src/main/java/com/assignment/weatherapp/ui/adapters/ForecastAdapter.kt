@@ -1,27 +1,18 @@
 package com.assignment.weatherapp.ui.adapters
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import androidx.core.text.isDigitsOnly
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.assignment.weatherapp.R
 import com.assignment.weatherapp.databinding.ForecastItemBinding
 import com.assignment.weatherapp.entities.ForecastResult
-import com.assignment.weatherapp.entities.WeatherStatus
-import com.assignment.weatherapp.util.AppConstants.COLON
-import com.assignment.weatherapp.util.AppConstants.DAY_TITLE
-import com.assignment.weatherapp.util.AppConstants.NOT_AVAILABLE_TITLE
-import com.assignment.weatherapp.util.AppConstants.SPACE
-import com.assignment.weatherapp.util.AppConstants.WIND_TITLE
-import com.assignment.weatherapp.util.AppUtils
-import com.assignment.weatherapp.util.ForecastAdapterDiffUtil
+import com.assignment.weatherapp.ui.viewholder.ForeCastItemViewHolder
+import com.assignment.weatherapp.ui.diffutil.ForecastAdapterDiffUtil
 
 class ForecastAdapter :
-    RecyclerView.Adapter<ForecastAdapter.ForeCastItemViewHolder>() {
+    RecyclerView.Adapter<ForeCastItemViewHolder>() {
 
-    private var forecastItems = mutableListOf<ForecastResult>()
+    private var forecastItems = ArrayList<ForecastResult>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ForeCastItemViewHolder {
         val binding =
@@ -34,54 +25,17 @@ class ForecastAdapter :
         holder.bind(forecastItem)
     }
 
-    fun loadItems(forecastItems: MutableList<ForecastResult>) {
-        this.forecastItems = forecastItems
-    }
-
-    fun updateLoadItems(newForecastItems: List<ForecastResult>) {
-        val diffCallback = ForecastAdapterDiffUtil(forecastItems, newForecastItems)
-        val diffResult = DiffUtil.calculateDiff(diffCallback)
-        forecastItems.clear()
-        forecastItems.addAll(newForecastItems)
-        diffResult.dispatchUpdatesTo(this)
-    }
-
     override fun getItemCount(): Int {
         return forecastItems.size
     }
 
-    inner class ForeCastItemViewHolder(private val viewHolder: ForecastItemBinding) :
-        RecyclerView.ViewHolder(viewHolder.root) {
-
-        fun bind(forecastItem: ForecastResult) {
-            with(viewHolder) {
-                textDayType.text = DAY_TITLE + SPACE + forecastItem.day
-                textWindValue.text = WIND_TITLE + COLON + SPACE + forecastItem.wind
-                textLabelDegree.visibility = View.VISIBLE
-                val temp: String = AppUtils.getNumberFromString(forecastItem.temperature)
-                when {
-                    temp.isDigitsOnly() && temp.isNotEmpty() -> {
-                        textTemperature.text = temp
-                        updateImageWeatherSymbol(temp)
-                    }
-                    else -> {
-                        textTemperature.text = NOT_AVAILABLE_TITLE
-                        textLabelDegree.visibility = View.GONE
-                        imageWeatherSymbol.setImageResource(R.drawable.ic_sunny)
-                    }
-                }
-            }
+    fun updateForecastItems(newForecastItems: List<ForecastResult>) {
+        val diffCallback = ForecastAdapterDiffUtil(forecastItems, newForecastItems)
+        val diffResult = DiffUtil.calculateDiff(diffCallback)
+        with(forecastItems) {
+            clear()
+            addAll(newForecastItems)
         }
-
-        private fun ForecastItemBinding.updateImageWeatherSymbol(temp: String) {
-            with(imageWeatherSymbol) {
-                when (AppUtils.getWeatherStatusFromTemperature(temp.toDouble())) {
-                    WeatherStatus.SUNNY -> setImageResource(R.drawable.ic_sunny)
-                    WeatherStatus.RAINY -> setImageResource(R.drawable.ic_rainy)
-                    WeatherStatus.SNOWY -> setImageResource(R.drawable.ic_rainy)
-                    WeatherStatus.CLOUDY -> setImageResource(R.drawable.ic_sunny)
-                }
-            }
-        }
+        diffResult.dispatchUpdatesTo(this)
     }
 }

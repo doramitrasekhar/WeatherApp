@@ -11,7 +11,7 @@ import dagger.hilt.components.SingletonComponent
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class ApplicationModule {
+abstract class RepositoryModule {
     @Binds
     abstract fun provideWeatherInfoRemoteDataSource(
         weatherInfoRemoteDataSourceImpl: WeatherInfoRemoteDataSourceImpl

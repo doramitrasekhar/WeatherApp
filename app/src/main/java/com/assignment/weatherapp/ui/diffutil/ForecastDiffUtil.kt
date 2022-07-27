@@ -1,4 +1,4 @@
-package com.assignment.weatherapp.util
+package com.assignment.weatherapp.ui.diffutil
 
 import androidx.annotation.Nullable
 import androidx.recyclerview.widget.DiffUtil
@@ -14,7 +14,7 @@ class ForecastAdapterDiffUtil(
     override fun getNewListSize(): Int = newList.size
 
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldList[oldItemPosition].temperature === newList.get(newItemPosition).temperature
+        return oldList[oldItemPosition].day === newList[newItemPosition].day
     }
 
     override fun areContentsTheSame(oldPosition: Int, newPosition: Int): Boolean {

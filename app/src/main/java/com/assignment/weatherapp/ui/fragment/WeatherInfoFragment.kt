@@ -32,6 +32,7 @@ class WeatherInfoFragment : Fragment() {
 
     private lateinit var _binding: WeatherInfoBinding
     private val weatherInfoViewModel: WeatherInfoViewModel by viewModels()
+    private lateinit var forecastAdapter: ForecastAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -110,10 +111,8 @@ class WeatherInfoFragment : Fragment() {
             LoadingScreen.hideLoading()
             /// update views
             updateViewVisibility(this)
-            /// sets the adapter
-            recyclerViewSearchedCityTemperature.adapter = ForecastAdapter().apply {
-                this.loadItems(it.forecast.toMutableList())
-            }
+            /// update the recycler view adapter
+            forecastAdapter.updateForecastItems(it.forecast)
             /// sets text to views
             setTextDetailsToView(this, it)
         }
@@ -192,15 +191,16 @@ class WeatherInfoFragment : Fragment() {
      * Initialising the recycler view
      */
     private fun initializeRecyclerView(binding: WeatherInfoBinding) {
-        val mLayoutManager = LinearLayoutManager(
-            context,
-            LinearLayoutManager.HORIZONTAL,
-            false
-        )
+        forecastAdapter = ForecastAdapter()
         binding.apply {
             recyclerViewSearchedCityTemperature.apply {
-                layoutManager = mLayoutManager
+                layoutManager = LinearLayoutManager(
+                    context,
+                    LinearLayoutManager.HORIZONTAL,
+                    false
+                )
                 itemAnimator = DefaultItemAnimator()
+                adapter = forecastAdapter
             }
         }
     }

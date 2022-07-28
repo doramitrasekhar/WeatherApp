@@ -91,4 +91,5 @@ dependencies {
     testImplementation "androidx.arch.core:core-testing:${rootProject.ext.core_testing}"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:${rootProject.ext.kotlinx_coroutines}"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:${rootProject.ext.kotlinx_coroutines}"
+    implementation "androidx.test.espresso:espresso-idling-resource:3.4.0"
 }

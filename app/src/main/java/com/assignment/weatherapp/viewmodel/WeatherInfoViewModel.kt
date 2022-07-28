@@ -8,6 +8,7 @@ import com.assignment.domain.usecases.GetWeatherInfoUseCase
 import com.assignment.domain.usecases.SaveWeatherInfoUseCase
 import com.assignment.weatherapp.mappers.WeatherInfoErrorViewMapper
 import com.assignment.weatherapp.mappers.WeatherInfoResultMapper
+import com.assignment.weatherapp.util.EspressoIdlingResource
 import com.assignment.weatherapp.util.WeatherInfoState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,9 +32,11 @@ class WeatherInfoViewModel @Inject constructor(
      */
     fun getWeatherInfo(countryName: String) {
         viewModelScope.launch {
+            EspressoIdlingResource.increment()
             _weatherInfo.value = WeatherInfoState.Loading(isLoading = true)
             when (val weatherInfoResult = getWeatherInfoUseCase(countryName)) {
                 is Result.Success -> {
+                    EspressoIdlingResource.decrement()
                     val weatherInfo = weatherInfoResult.data
                     weatherInfo?.let {
                         /// update the weather Info to UI
@@ -43,6 +46,7 @@ class WeatherInfoViewModel @Inject constructor(
                     }
                 }
                 is Result.Error -> {
+                    EspressoIdlingResource.decrement()
                     updateErrorResult(weatherInfoResult)
                 }
             }

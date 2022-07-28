@@ -4,16 +4,20 @@ package com.assignment.weatherapp.ui.activity
 import android.view.View
 import android.view.ViewGroup
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.assignment.weatherapp.R
+import com.assignment.weatherapp.util.EspressoIdlingResource
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.TypeSafeMatcher
+import org.junit.After
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -25,10 +29,18 @@ class WeatherInfoUserInterfaceWrongInputTest {
     @Rule
     @JvmField
     var mActivityScenarioRule = ActivityScenarioRule(MainActivity::class.java)
+    @Before
+    fun registerIdlingResource(){
+        IdlingRegistry.getInstance().register(EspressoIdlingResource.idlingResource)
+    }
+
+    @After
+    fun unregisterIdlingResource(){
+        IdlingRegistry.getInstance().unregister(EspressoIdlingResource.idlingResource)
+    }
 
     @Test
     fun weatherInfoUserInterfaceWrongInputTest() {
-        Thread.sleep(2000)
         val textInputEditText = onView(
             allOf(
                 withId(R.id.input_find_city_weather),
@@ -64,7 +76,6 @@ class WeatherInfoUserInterfaceWrongInputTest {
             )
         )
         textInputEditText2.perform(pressImeActionButton())
-        Thread.sleep(2000)
     }
 
     private fun childAtPosition(

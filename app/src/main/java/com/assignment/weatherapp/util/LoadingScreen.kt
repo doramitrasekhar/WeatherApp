@@ -9,34 +9,35 @@ import android.widget.TextView
 import com.assignment.weatherapp.R
 
 object LoadingScreen {
-    var dialog: Dialog? = null
+
+    private lateinit var dialog: Dialog
 
     /// shows the loader with text
     fun displayLoadingWithText(
         context: Context?,
-        text: String?,
-        cancelable: Boolean
+        text: String,
+        cancelable: Boolean,
     ) {
-        dialog = Dialog(context!!)
-        dialog!!.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog!!.setContentView(R.layout.weather_loader)
-        dialog!!.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        dialog!!.setCancelable(cancelable)
-        val textView = dialog!!.findViewById<TextView>(R.id.message)
-        textView.text = text
-        try {
-            dialog!!.show()
-        } catch (e: Exception) {
+        context?.let {
+            dialog = Dialog(it)
+            with(dialog) {
+                requestWindowFeature(Window.FEATURE_NO_TITLE)
+                setContentView(R.layout.weather_loader)
+                window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                setCancelable(cancelable)
+                findViewById<TextView>(R.id.message).text = text
+                try {
+                    show()
+                } catch (e: Exception) {
+                }
+            }
         }
     }
 
     /// hides the loader
     fun hideLoading() {
-        try {
-            if (dialog != null) {
-                dialog!!.dismiss()
-            }
-        } catch (e: Exception) {
+        if (this::dialog.isInitialized) {
+            dialog.dismiss()
         }
     }
 }

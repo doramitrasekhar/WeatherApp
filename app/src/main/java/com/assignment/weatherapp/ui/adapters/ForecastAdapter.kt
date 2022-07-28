@@ -12,7 +12,7 @@ import com.assignment.weatherapp.ui.diffutil.ForecastAdapterDiffUtil
 class ForecastAdapter :
     RecyclerView.Adapter<ForeCastItemViewHolder>() {
 
-    private var forecastItems = ArrayList<ForecastResult>()
+    private var forecastItems = mutableListOf<ForecastResult>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ForeCastItemViewHolder {
         val binding =

@@ -2,7 +2,6 @@ package com.assignment.weatherapp.viewmodel
 
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.Observer
 import com.assignment.data.util.Constants
 import com.assignment.domain.entities.WeatherEntityInfo
 import com.assignment.domain.usecases.GetWeatherInfoUseCase
@@ -18,9 +17,7 @@ import com.assignment.weatherapp.mappers.WeatherInfoResultMapper
 import com.assignment.weatherapp.util.WeatherInfoState
 import io.mockk.coEvery
 import io.mockk.every
-import io.mockk.impl.annotations.MockK
 import io.mockk.mockk
-import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -45,9 +42,6 @@ internal class WeatherInfoViewModelUT {
     private val weatherInfoResultMapper = WeatherInfoResultMapper()
     private val mContextMock = mockk<Context>(relaxed = true)
     private val weatherInfoErrorViewMapper = WeatherInfoErrorViewMapper(mContextMock)
-
-    @MockK
-    private var apiUsersObserver = mockk<Observer<WeatherInfoState>>(relaxed = true)
 
     @Before
     fun setUp() {
@@ -85,40 +79,5 @@ internal class WeatherInfoViewModelUT {
         val data = weatherInfoViewModel.weatherInfo.value as WeatherInfoState.Error
         assertEquals(
             data.error.message, Constants.UNKNOWN)
-    }
-
-    @Test
-    fun `GIVEN weatherInfoUseCase WHEN called THEN should return success in live data`() = runTest {
-
-        coEvery { weatherInfoUseCase.invoke(countryName) } returns getSuccessResult()
-        coEvery {
-            saveWeatherInfoUseCase.invoke(
-                weatherEntityInfo = WeatherEntityInfo(
-                    countryName = countryName,
-                    weatherInfo = getWeatherResult()
-                )
-            )
-        } returns Unit
-
-        weatherInfoViewModel.getWeatherInfo(countryName)
-        weatherInfoViewModel.weatherInfo
-            .observeForever(apiUsersObserver)
-        verify { apiUsersObserver.onChanged(weatherInfoViewModel.weatherInfo.value) }
-
-        weatherInfoViewModel.weatherInfo.removeObserver(apiUsersObserver)
-    }
-
-
-    @Test
-    fun `GIVEN weatherInfoUseCase WHEN called THEN should return Error in live data`() = runTest {
-        //GIVEN
-        coEvery { weatherInfoUseCase.invoke(countryName) } returns getErrorResult()
-        // WHEN
-        weatherInfoViewModel.getWeatherInfo(countryName)
-        weatherInfoViewModel.weatherInfo
-            .observeForever(apiUsersObserver)
-        verify { apiUsersObserver.onChanged(weatherInfoViewModel.weatherInfo.value) }
-        // THEN
-        weatherInfoViewModel.weatherInfo.removeObserver(apiUsersObserver)
     }
 }

@@ -32,39 +32,30 @@ class NetworkModule {
 
     @Provides
     @Singleton
-    fun provideRetrofit(client: OkHttpClient): Retrofit {
-        return Retrofit.Builder().apply {
-            baseUrl(BuildConfig.BASE_URL)
-            client(client)
-            addConverterFactory(
-                GsonConverterFactory.create(GsonBuilder().create())
-            )
-        }.build()
-    }
+    fun provideRetrofit(client: OkHttpClient): Retrofit = Retrofit.Builder().apply {
+        baseUrl(BuildConfig.BASE_URL)
+        client(client)
+        addConverterFactory(
+            GsonConverterFactory.create(GsonBuilder().create())
+        )
+    }.build()
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(headerInterceptor: Interceptor): OkHttpClient {
-        val okHttpClientBuilder = OkHttpClient().newBuilder()
-        return okHttpClientBuilder.apply {
-            readTimeout(READ_TIMEOUT.toLong(), TimeUnit.SECONDS)
-            writeTimeout(WRITE_TIMEOUT.toLong(), TimeUnit.SECONDS)
-            connectTimeout(CONNECTION_TIMEOUT.toLong(), TimeUnit.SECONDS)
-            addInterceptor(headerInterceptor)
-        }.build()
-    }
+    fun provideOkHttpClient(headerInterceptor: Interceptor): OkHttpClient = OkHttpClient().newBuilder().apply {
+        readTimeout(READ_TIMEOUT.toLong(), TimeUnit.SECONDS)
+        writeTimeout(WRITE_TIMEOUT.toLong(), TimeUnit.SECONDS)
+        connectTimeout(CONNECTION_TIMEOUT.toLong(), TimeUnit.SECONDS)
+        addInterceptor(headerInterceptor)
+    }.build()
 
     @Provides
     @Singleton
-    fun provideHeaderInterceptor(): Interceptor {
-        return ErrorInterceptor()
-    }
+    fun provideHeaderInterceptor(): Interceptor = ErrorInterceptor()
 
     @Provides
     @Singleton
-    fun provideApi(retrofit: Retrofit): WeatherApi {
-        return retrofit.create(WeatherApi::class.java)
-    }
+    fun provideApi(retrofit: Retrofit): WeatherApi = retrofit.create(WeatherApi::class.java)
 }
 
 class ErrorInterceptor : Interceptor {

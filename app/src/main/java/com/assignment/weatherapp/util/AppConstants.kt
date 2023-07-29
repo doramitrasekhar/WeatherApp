@@ -1,5 +1,6 @@
 package com.assignment.weatherapp.util
 
+// these are constants
 object AppConstants {
     const val DATE_FORMAT = "E, d MMM yyyy"
     const val SPACE = " "
